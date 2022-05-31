@@ -1,9 +1,5 @@
-import { LikeOutlined, MessageFilled, StarTwoTone } from '@ant-design/icons';
-import { Space, Table, Tag } from 'antd';
-import { useRequest } from 'umi';
-import { queryFakeList } from '../../service';
-import ArticleListContent from '../ArticleListContent';
-import styles from './index.less';
+import { Space, Table } from 'antd';
+
 const columns = [
   {
     title: '时间',
@@ -36,11 +32,15 @@ const columns = [
   },
 ];
 
-const Articles = (props) => {
+const Reservations = (props) => {
 
   const { data } = props;
 
-  return <Table columns={columns} dataSource={data} />;
+  return <Table
+    columns={columns}
+    dataSource={data}
+    rowKey="app_id"
+  />;
 }
 
-export default Articles;
+export default Reservations;

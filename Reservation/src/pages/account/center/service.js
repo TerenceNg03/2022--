@@ -1,7 +1,6 @@
 import { request } from 'umi';
 
 export async function queryReservations(data) {
-  console.log(data);
   return request('/api/query_patient.php', {
     method: 'POST',
     data: data,

@@ -1,20 +1,13 @@
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
-import {
-  Select,
-  Avatar,
-  Card,
-  Input,
-  List,
-  message
-} from 'antd';
+import { Select, Avatar, Card, Input, List, message } from 'antd';
 import { useState } from 'react';
 import { useRequest } from 'umi';
+import moment from 'moment';
 import OperationModal from './components/OperationModal';
 import { queryDoctorList, reserveDoctor } from './service';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import styles from './style.less';
-import moment from 'moment';
 
 const Option = Select.Option;
 const { Search } = Input;
@@ -29,15 +22,18 @@ export const BasicList = () => {
     return queryCurrentUser();
   });
 
-  const {
-    data,
-    loading,
-    mutate,
-  } = useRequest(() => {
-    return queryDoctorList({
+  const { data, loading, mutate } = useRequest(
+    () => {
+      return queryDoctorList({
 
-    });
-  }, { onSuccess: () => { setDoctors(data);} });
+      });
+    },
+    {
+      onSuccess: () => {
+        setDoctors(data);
+      }
+    },
+  );
 
   const { run: reserve } = useRequest(
     (params) => {
@@ -110,7 +106,7 @@ export const BasicList = () => {
             showSearch
             placeholder="选择医院"
             style={{
-              width: 120,
+              width: 240,
             }}
             onChange={handleHospitalChange}
           >

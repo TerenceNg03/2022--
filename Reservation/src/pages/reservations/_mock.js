@@ -188,7 +188,4 @@ function QueryReserveList(req, res, data) {
 
 export default {
   'GET /api/reserveList/queryList': QueryReserveList,
-  // 'POST /api/rule': postRule,
-  // 'DELETE /api/rule': postRule,
-  // 'PUT /api/rule': postRule,
 };

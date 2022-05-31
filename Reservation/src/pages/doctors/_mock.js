@@ -46,6 +46,7 @@ function fakeList(count) {
 function getFakeDoctors(req, res) {
   const result = fakeList(50);
   return res.json({
+    success: true,
     data: result,
   });
 }

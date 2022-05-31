@@ -1,10 +1,7 @@
-import Footer from '@/components/Footer';
 import { login } from '@/services/ant-design-pro/api';
-import { getFakeCaptcha } from '@/services/ant-design-pro/login';
-import { LoginForm, ProFormText, ProFormRadio } from '@ant-design/pro-form';
-import { Alert, message, Tabs, Button } from 'antd';
-import { useState } from 'react';
-import { FormattedMessage, history, SelectLang, useIntl, useModel } from 'umi';
+import { LoginForm, ProFormRadio } from '@ant-design/pro-form';
+import { Alert, message } from 'antd';
+import { history, useIntl, useModel } from 'umi';
 import styles from './index.less';
 
 const LoginMessage = ({ content }) => (

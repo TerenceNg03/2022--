@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Link, useRequest, useModel } from 'umi';
 import styles from './Center.less';
 import Applications from './components/Applications';
-import Articles from './components/Articles';
+import Reservations from './components/Articles';
 import Projects from './components/Projects';
 import { queryCurrent, queryReservations, queryRecords, queryBills } from './service';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
@@ -148,7 +148,7 @@ const Center = () => {
   const renderChildrenByTabKey = (tabValue) => {
 
     if (tabValue === 'reservations') { //预约记录
-      return <Articles data={userData.reservations}/>;
+      return <Reservations data={userData.reservations}/>;
     }
 
     if (tabValue === 'records') { //过往病历

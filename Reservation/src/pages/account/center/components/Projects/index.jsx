@@ -11,7 +11,7 @@ const Projects = (props) => {
   const { data } = props;
   
   return <div>{data.map((item) => {
-    return <Descriptions title="账单" bordered>
+    return <Descriptions title="账单" bordered key={item.key}>
     <Descriptions.Item label="姓名">{item.name}</Descriptions.Item>
     <Descriptions.Item label="是否参保">{item.canbao}</Descriptions.Item>
     <Descriptions.Item label="支付方式">{item.zhifufangshi}</Descriptions.Item>
