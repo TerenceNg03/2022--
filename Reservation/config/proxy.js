@@ -13,7 +13,7 @@ export default {
       target: 'http://127.0.0.1',
       changeOrigin: true,
       pathRewrite: {
-        '^/api': '/EE',
+        '^/api': '/SE/back',
       },
     },
   },
@@ -22,7 +22,7 @@ export default {
       target: 'http://127.0.0.1',
       changeOrigin: true,
       pathRewrite: {
-        '^/api': '/EE',
+        '^/api': '/SE/back',
       },
     },
   },

@@ -3,7 +3,10 @@ import { join } from 'path';
 import { defineConfig } from 'umi';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
+import routes from './routes';
+
 const { REACT_APP_ENV } = process.env;
+
 export default defineConfig({
   hash: true,
   antd: {},
@@ -31,78 +34,7 @@ export default defineConfig({
     ie: 11,
   },
   // umi routes: https://umijs.org/docs/routing
-  routes: [
-    {
-      path: '/user',
-      layout: false,
-      routes: [
-        {
-          path: '/user/login',
-          layout: false,
-          name: 'login',
-          component: './user/Login',
-        },
-        {
-          path: '/user',
-          redirect: '/user/login',
-        },
-        {
-          component: '404',
-        },
-      ],
-    },
-
-    {
-      path: '/',
-      name: 'EE',
-      routes: [
-        {
-          path: '/',
-          redirect: '/center',
-        },
-        {
-          path: '/center',
-          name: 'center',
-          icon: 'user',
-          component: './account/center',
-          access: 'canPatient',
-        },
-        {
-          path: '/doctors',
-          name: 'doctors',
-          icon: 'table',
-          component: './doctors',
-          access: 'canPatient',
-        },
-        {
-          path: '/reservations',
-          name: 'reservations',
-          icon: 'table',
-          component: './reservations',
-          access: 'canDoctor',
-        },
-        {
-          path: '/detail',
-          name: 'detail',
-          icon: 'profile',
-          component: './detail',
-          access: 'canDoctor',
-          hideInMenu: true,
-        },
-        {
-          component: '404',
-        },
-      ],
-    },
-
-    {
-      path: '/scripts',   
-    },
-
-    {
-      component: '404',
-    },
-  ],
+  routes: routes,
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn
   theme: {
     'primary-color': defaultSettings.primaryColor,
