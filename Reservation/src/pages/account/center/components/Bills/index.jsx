@@ -1,12 +1,6 @@
-import { Badge, Descriptions,Input } from 'antd';
-import { useRequest } from 'umi';
-import { queryFakeList } from '../../service';
-import AvatarList from '../AvatarList';
-import styles from './index.less';
-import moment from 'moment';
-import { useEffect } from 'react';
+import { Badge, Descriptions } from 'antd';
 
-const Projects = (props) => {
+const Bills = (props) => {
 
   const { data } = props;
   
@@ -33,4 +27,4 @@ const Projects = (props) => {
 
   };
 
-export default Projects;
+export default Bills;

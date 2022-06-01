@@ -1,9 +1,7 @@
-import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import { Select, Avatar, Card, Input, List, message } from 'antd';
 import { useState } from 'react';
 import { useRequest } from 'umi';
-import moment from 'moment';
 import OperationModal from './components/OperationModal';
 import { queryDoctorList, reserveDoctor } from './service';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';

@@ -1,12 +1,12 @@
-import { ClusterOutlined, ContactsOutlined, HomeOutlined, PlusOutlined } from '@ant-design/icons';
+import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
-import { useRef, useState, useEffect } from 'react';
-import { Link, useRequest, useModel } from 'umi';
+import { useRef, useState } from 'react';
+import { Link, useRequest } from 'umi';
 import styles from './Center.less';
-import Applications from './components/Applications';
+import Records from './components/Applications';
 import Reservations from './components/Articles';
-import Projects from './components/Projects';
+import Bills from './components/Projects';
 import { queryCurrent, queryReservations, queryRecords, queryBills } from './service';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 
@@ -147,16 +147,20 @@ const Center = () => {
 
   const renderChildrenByTabKey = (tabValue) => {
 
+    if(!currentUser) {
+      return false;
+    }
+
     if (tabValue === 'reservations') { //预约记录
       return <Reservations data={userData.reservations}/>;
     }
 
     if (tabValue === 'records') { //过往病历
-      return <Applications data={userData.records}/>;
+      return <Records data={userData.records}/>;
     }
 
     if (tabValue === 'bills') { //账单
-      return <Projects data={userData.bills}/>;
+      return <Bills data={userData.bills}/>;
     }
 
     return null;

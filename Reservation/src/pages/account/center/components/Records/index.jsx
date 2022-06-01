@@ -1,12 +1,6 @@
-
 import { Avatar, List, } from 'antd';
-import { useRequest } from 'umi';
-import { queryFakeList } from '../../service';
-import stylesApplications from './index.less';
-import numeral from 'numeral';
 
-
-const Applications = (props) => {
+const Records = (props) => {
 
   const { data } = props;
   return <List
@@ -25,4 +19,4 @@ const Applications = (props) => {
   />
 };
 
-export default Applications;
+export default Records;
