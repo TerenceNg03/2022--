@@ -1,4 +1,5 @@
-import { Space, Table, Divider, Typography, Badge } from 'antd';
+import { Space, Table, Typography, Badge } from 'antd';
+import moment from 'moment';
 import { changeStatus } from '../../../../detail/service';
 
 const Reservations = (props) => {
@@ -26,9 +27,22 @@ const Reservations = (props) => {
 
   const columns = [
     {
+      title: '预约日期',
+      key: 'date',
+      render: (_, record) => (
+        <span>
+          {moment(record.start_time).format('YYYY-MM-DD')}
+        </span>
+      ),
+    },
+    {
       title: '预约时间',
-      dataIndex: 'start_time',
-      key: 'time',
+      key: 'range',
+      render: (_, record) => (
+        <span>
+          {moment(record.expire_time).format('HH:mm:ss')}~{moment(record.expire_time).format('HH:mm:ss')}
+        </span>
+      ),
     },
     {
       title: '医院',
@@ -59,7 +73,7 @@ const Reservations = (props) => {
       title: '操作',
       key: 'detail',
       render: (_, record) => (
-        <Space split={<Divider type="vertical" />}>
+        <Space size={16}>
           <a>详情</a>
           <Typography.Link
             disabled={record.status != 'booked'}

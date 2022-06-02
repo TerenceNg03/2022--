@@ -12,6 +12,7 @@ const timeRangeToString = range => `${range.start}~${range.end}`;
 
 const OperationModal = (props) => {
   const [timeVisible, setTimeVisible] = useState(false);
+  const [choosenDate, setChoosenDate] = useState('');
   const [daySchedule, setDaySchedule] = useState([]);
   const [occupiedRanges, setOccupiedRanges] = useState({});
   const formRef = useRef(null);
@@ -32,8 +33,10 @@ const OperationModal = (props) => {
   }, { refreshDeps: [current.id] });
 
   const disabledDate = (current) => {
-    let diff = current.diff(moment(), 'days');
-    return current && (diff >= 6 || diff < 0);
+    if(!current) return false;
+
+    const diff = current.diff(moment(), 'days');
+    return diff >= 6 || diff < 0;
   };
 
   return (
@@ -44,11 +47,12 @@ const OperationModal = (props) => {
       className={styles.standardListForm}
       width={640}
       onFinish={async (values) => {
-        const { 0: start_time, 1: end_time } = values.range.split('~');
+        const { 0: start_time, 1: expire_time } = values.range.split('~');
         onSubmit({
           doctor_id: current.id,
           description: values.description || "" ,
-          time: moment(values.date + ' ' + start_time).format('YYYY-MM-DD HH:mm:ss'),
+          start_time: moment(values.date + ' ' + start_time).format('YYYY-MM-DD HH:mm:ss'),
+          expire_time: moment(values.date + ' ' + expire_time).format('YYYY-MM-DD HH:mm:ss'),
         });
       }}
       //initialValues={current}
@@ -72,8 +76,9 @@ const OperationModal = (props) => {
             label="预约时间"
             format="YYYY-MM-DD"
             onChange={(date, dateString) => {
-              let weekday = (date.weekday() + 1) % 7;
+              const weekday = (date.weekday() + 1) % 7;
               setTimeVisible(true);
+              setChoosenDate(dateString);
               setDaySchedule(schedule[weekday]);
               setOccupiedRanges(new Set(weekTimepicked[weekday].map(item => timeRangeToString(item))));
               formRef.current.resetFields(['range']);
@@ -105,14 +110,16 @@ const OperationModal = (props) => {
                 placeholder="选择预约时间段"
               >
                 {
-                  daySchedule.map((item) => {
-                    let occupied = occupiedRanges.has(timeRangeToString(item));
+                  daySchedule.map((range) => {
+                    const rangeString = timeRangeToString(range);
+                    const occupied = occupiedRanges.has(rangeString);
+                    const past = moment(choosenDate + ' ' + range.start).isBefore(moment());
                     return <Option
-                      value={timeRangeToString(item)}
+                      value={rangeString}
                       key={timeRangeToString}
-                      disabled={occupied}
+                      disabled={occupied || past}
                     >
-                      {timeRangeToString(item) + (occupied ? '（预约已满）' : '')}
+                      {timeRangeToString(range) + (past ? '（时间已过）' : occupied ? '（预约已满）' : '')}
                     </Option>;
                   })
                 }

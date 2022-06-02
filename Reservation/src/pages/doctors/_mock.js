@@ -32,7 +32,7 @@ function fakeList(count) {
 
   for (let i = 0; i < count; i += 1) {
     list.push({
-      id: i,
+      id: 20023+i,
       name: names[i % 8],
       avatar: avatars[i % 8],
       description: desc[i % 5],
@@ -98,6 +98,10 @@ function getFakeArrangement(req, res) {
         },
       ],
       5: [
+        {
+          start: "00:00",
+          end: "01:00",
+        },
         {
           start: "12:00",
           end: "13:00",
