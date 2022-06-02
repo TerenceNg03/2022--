@@ -9,6 +9,7 @@ const names = [
   '林医生',
   '孙医生',
 ];
+
 const avatars = [
   'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', // Alipay
   'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png', // Angular
@@ -19,12 +20,21 @@ const avatars = [
   'https://gw.alipayobjects.com/zos/rmsportal/ComBAopevLwENQdKWiIn.png', // Vue
   'https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png', // Webpack
 ];
-const desc = [
-  '该医生很牛',
-  '希望是一个好东西，也许是最好的，好东西是不会消亡的',
-  '生命就像一盒巧克力，结果往往出人意料',
-  '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
-  '那时候我只会想自己想要什么，从不想自己拥有什么',
+
+const hospitals = [
+  '浙江大学附属第一医院',
+  '浙江省立同德医院',
+  '浙大二院',
+  '浙江大学附属第一医院',
+  '浙江省立同德医院',
+];
+
+const departments = [
+  '外科',
+  '小儿科',
+  '内科',
+  '内科',
+  '小儿科',
 ];
 
 function fakeList(count) {
@@ -33,14 +43,28 @@ function fakeList(count) {
   for (let i = 0; i < count; i += 1) {
     list.push({
       id: 20023+i,
-      name: names[i % 8],
+      realName: names[i % 8],
       avatar: avatars[i % 8],
-      description: desc[i % 5],
-      href: 'https://ant.design',
+      hospital: hospitals[i % 5],
+      department: departments[i % 5],
     });
   }
 
   return list;
+}
+
+function getFakeHospitals(req, res) {
+  return res.json({
+    success: true,
+    data: ['浙江大学附属第一医院', '浙大二院', '浙江省立同德医院'],
+  });
+}
+
+function getFakeDepartments(req, res) {
+  return res.json({
+    success: true,
+    data: ['外科', '内科', '小儿科'],
+  });
 }
 
 function getFakeDoctors(req, res) {
@@ -156,8 +180,14 @@ function getFakePickedTime(req, res) {
 }
 
 export default {
-  'GET  /api/get_doctors': getFakeDoctors,
+  'GET  /api/doctor': getFakeDoctors,
+  'GET  /api/doctor/all': getFakeDoctors,
+  'GET  /api/doctor/hospital/:hospital': getFakeDoctors,
+  'GET  /api/doctor/dept/:dept': getFakeDoctors,
+
+  'GET  /api/hospital': getFakeHospitals,
+  'GET  /api/dept': getFakeDepartments,
   'POST /api/make_appoint': postFakeReservation,
   'GET  /api/arrange': getFakeArrangement,
-  'GET  /api/query_picked_time': getFakePickedTime,
+  'GET  /api/occupation': getFakePickedTime,
 };

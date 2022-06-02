@@ -3,7 +3,7 @@ import { Select, Avatar, Card, Input, List, message } from 'antd';
 import { useState } from 'react';
 import { useRequest } from 'umi';
 import OperationModal from './components/OperationModal';
-import { queryDoctorList, reserveDoctor } from './service';
+import { queryHospitalList, queryDepartmentList, queryDoctorList, reserveDoctor } from './service';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import styles from './style.less';
 
@@ -15,18 +15,24 @@ const DoctorList = () => {
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState({id: 0});
   const [doctors, setDoctors] = useState([]);
+  const [hospital, setHospital] = useState();
+  const [department, setDepartment] = useState();
 
-  const { data: currentUser } = useRequest(() => {
-    return queryCurrentUser();
-  });
+  const { data: currentUser } = useRequest(queryCurrentUser);
+
+  const { data: hospitals } = useRequest(queryHospitalList);
+
+  const { data: departments } = useRequest(queryDepartmentList);
 
   const { data, loading, mutate } = useRequest(
     () => {
       return queryDoctorList({
-
+        hospital,
+        department,
       });
     },
     {
+      refreshDeps: [hospital, department],
       onSuccess: () => {
         setDoctors(data);
       }
@@ -71,14 +77,6 @@ const DoctorList = () => {
     reserve({ "patient_id" : currentUser.id , ...values});
   };
 
-  const handleHospitalChange = (value) => {
-    
-  };
-
-  const handleDepartmentChange = (value) => {
-    
-  };
-
   const handleSearch = (value) => {
     setDoctors(data.filter(item => item.name.includes(value)));
   }
@@ -101,29 +99,33 @@ const DoctorList = () => {
       <PageContainer>
         <div className={styles.standardList}>
           <Select
-            showSearch
+            allowClear
             placeholder="选择医院"
             style={{
               width: 240,
             }}
-            onChange={handleHospitalChange}
+            onChange={(value) => {setHospital(value);}}
           >
-            <Option value="浙江大学附属第一医院">浙江大学附属第一医院</Option>
-            <Option value="浙大二院">浙大二院</Option>
-            <Option value="浙江省立同德医院">浙江省立同德医院</Option>
+            { hospitals &&
+              hospitals.map((item) => {
+                return <Option value={item} key={item}> {item} </Option>;
+              })
+            }
           </Select>
 
           <Select
-            showSearch
+            allowClear
             placeholder="选择科室"
             style={{
               width: 120,
             }}
-            onChange={handleDepartmentChange}
+            onChange={(value) => {setDepartment(value);}}
           >
-            <Option value="外科">外科</Option>
-            <Option value="内科">内科</Option>
-            <Option value="小儿科">小儿科</Option>
+            { departments &&
+              departments.map((item) => {
+                return <Option value={item} key={item}> {item} </Option>;
+              })
+            }
           </Select>
 
           <Card
@@ -160,8 +162,8 @@ const DoctorList = () => {
                 >
                   <List.Item.Meta
                     avatar={<Avatar src={item.avatar} shape="square" size="large" />}
-                    title={<a href={item.href}>{item.name}</a>}
-                    description={item.description}
+                    title={item.realName}
+                    description={`${item.hospital} ${item.department}`}
                   />
                 </List.Item>
               )}

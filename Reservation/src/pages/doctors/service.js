@@ -1,10 +1,47 @@
 import { request } from 'umi';
 
-export async function queryDoctorList(data) {
-  return request('/api/get_doctors', {
+export async function queryHospitalList() {
+  return request('/api/hospital', {
     method: 'GET',
-    data: data,
   });
+}
+
+export async function queryDepartmentList() {
+  return request('/api/dept', {
+    method: 'GET',
+  });
+}
+
+export async function queryDoctorList(params) {
+  const { hospital, department, ...rest } = params;
+
+  if(!hospital && !department) {
+    return request('/api/doctor/all', {
+      method: 'GET',
+    });
+  }
+
+  if(hospital && !department) {
+    return request(`/api/doctor/hospital/${hospital}`, {
+      method: 'GET',
+    });
+  }
+
+  if(!hospital && department) {
+    return request(`/api/doctor/dept/${department}`, {
+      method: 'GET',
+    });
+  }
+
+  if(hospital && department) {
+    return request('/api/doctor/', {
+      method: 'GET',
+      data: {
+        hospital,
+        department,
+      },
+    });
+  }
 }
 
 export async function reserveDoctor(data) {
@@ -22,7 +59,7 @@ export async function querySchedule(data) {
 }
 
 export async function queryOccupiedRanges(data) {
-  return request('/api/query_picked_time', {
+  return request('/api/occupation', {
     method: 'GET',
     data: data,
   });
