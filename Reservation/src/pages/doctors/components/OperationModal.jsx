@@ -44,8 +44,12 @@ const OperationModal = (props) => {
       className={styles.standardListForm}
       width={640}
       onFinish={async (values) => {
-        console.log(values);
-        //onSubmit({ "doctor_id": current.id, "description": "" , ...values});
+        const { 0: start_time, 1: end_time } = values.range.split('~');
+        onSubmit({
+          doctor_id: current.id,
+          description: values.description || "" ,
+          time: moment(values.date + ' ' + start_time).format('YYYY-MM-DD HH:mm:ss'),
+        });
       }}
       //initialValues={current}
       submitter={{
