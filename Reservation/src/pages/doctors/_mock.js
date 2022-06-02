@@ -55,7 +55,105 @@ function postFakeReservation(req, res) {
   
 }
 
+function getFakeArrangement(req, res) {
+  return res.json({
+    success: true,
+    data: {
+      0: [
+        {
+          start: "12:00",
+          end: "13:00",
+        },
+        {
+          start: "15:00",
+          end: "16:00",
+        },
+      ],
+      1: [
+        {
+          start: "13:00",
+          end: "14:00",
+        },
+      ],
+      2: [
+        {
+          start: "12:00",
+          end: "13:00",
+        },
+        {
+          start: "16:00",
+          end: "16:30",
+        },
+      ],
+      3: [
+        {
+          start: "12:00",
+          end: "13:00",
+        },
+      ],
+      4: [
+        {
+          start: "12:00",
+          end: "13:00",
+        },
+      ],
+      5: [
+        {
+          start: "12:00",
+          end: "13:00",
+        },
+      ],
+      6: [
+        {
+          start: "13:00",
+          end: "14:00",
+        },
+      ],
+    },
+  });
+}
+
+function getFakePickedTime(req, res) {
+  return res.json({
+    success: true,
+    data: {
+      0: [
+        {
+          start: "15:00",
+          end: "16:00",
+        },
+      ],
+      1: [
+        {
+          start: "13:00",
+          end: "14:00",
+        },
+      ],
+      2: [
+        
+      ],
+      3: [
+        
+      ],
+      4: [
+        {
+          start: "12:00",
+          end: "13:00",
+        },
+      ],
+      5: [
+        
+      ],
+      6: [
+        
+      ],
+    },
+  });
+}
+
 export default {
   'GET  /api/get_doctors': getFakeDoctors,
   'POST /api/make_appoint': postFakeReservation,
+  'GET  /api/arrange': getFakeArrangement,
+  'GET  /api/query_picked_time': getFakePickedTime,
 };

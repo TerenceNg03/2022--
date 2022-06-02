@@ -13,3 +13,17 @@ export async function reserveDoctor(data) {
     data: data,
   });
 }
+
+export async function querySchedule(data) {
+  return request('/api/arrange', {
+    method: 'GET',
+    data: data,
+  });
+}
+
+export async function queryOccupiedRanges(data) {
+  return request('/api/query_picked_time', {
+    method: 'GET',
+    data: data,
+  });
+}

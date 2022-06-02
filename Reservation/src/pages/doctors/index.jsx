@@ -13,7 +13,7 @@ const { Search } = Input;
 const DoctorList = () => {
   const [done, setDone] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [current, setCurrent] = useState(undefined);
+  const [current, setCurrent] = useState({id: 0});
   const [doctors, setDoctors] = useState([]);
 
   const { data: currentUser } = useRequest(() => {
