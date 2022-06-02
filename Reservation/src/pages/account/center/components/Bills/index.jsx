@@ -3,6 +3,8 @@ import { Badge, Descriptions } from 'antd';
 const Bills = (props) => {
 
   const { data } = props;
+
+  if(!data) return false;
   
   return <div>{data.map((item) => {
     return <Descriptions title="账单" bordered key={item.key}>

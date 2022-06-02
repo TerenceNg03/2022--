@@ -30,6 +30,17 @@ export const TableList = () => {
       width: 500,
     },
     {
+      title: '预约时间',
+      dataIndex: 'start_time',
+      valueType: 'dateTime',
+      hideInSearch: true,
+      sorter: (a, b) => {
+        const atime = new Date(a.start_time).getTime();
+        const btime = new Date(b.start_time).getTime();
+        return atime - btime;
+      },
+    },
+    {
       title: '状态',
       dataIndex: 'status',
       valueEnum: {
@@ -46,20 +57,9 @@ export const TableList = () => {
           status: 'Default',
         },
         'cancelled': {
-          text: '已失效',
+          text: '已取消',
           status: 'Default',
         },
-      },
-    },
-    {
-      title: '预约时间',
-      dataIndex: 'start_time',
-      valueType: 'dateTime',
-      hideInSearch: true,
-      sorter: (a, b) => {
-        const atime = new Date(a.start_time).getTime();
-        const btime = new Date(b.start_time).getTime();
-        return atime - btime;
       },
     },
     {

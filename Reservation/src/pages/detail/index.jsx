@@ -114,6 +114,29 @@ const Detail = (props) => {
   
   const patientData = _patientData || {};
 
+  const statusInfos = {
+    booked: {
+      text: '尚未就诊',
+      buttonText: '开始接诊',
+      step: 0,
+    },
+    started: {
+      text: '就诊中',
+      buttonText: '就诊中',
+      step: 1,
+    },
+    done: {
+      text: '就诊结束',
+      buttonText: '已结束',
+      step: 2,
+    },
+    cancelled: {
+      text: '预约取消',
+      buttonText: '已取消',
+      step: 1,
+    }
+  }
+
   // const confirmDiagnosis = async (values) => {
   //   const { diagDate, diagnosis } = values;
   //   try {
@@ -146,8 +169,7 @@ const Detail = (props) => {
             type="primary"
             disabled={status != 'booked'}
           >
-            {status == 'booked' ? '开始接诊' :
-             status == 'started' ? '就诊中' : '已结束'}
+            {statusInfos[status].buttonText}
           </Button>
         );
       }}
@@ -252,11 +274,21 @@ const Detail = (props) => {
             <Steps
               direction={isMobile ? 'vertical' : 'horizontal'}
               progressDot={<></>}
-              current={status == 'done' ? 2 : status == 'started' ? 1 : 0}
+              current={statusInfos[status].step}
             >
               <Step title="预约成功" description={processTime(startTime)} />
-              <Step title="就诊中" description={status === 'started' ? diagnose : ''} />
-              <Step title="就诊结束" description={status === 'done' ? processTime(endTime) : ''}/>
+              {
+                status == 'cancelled'
+                ?
+                <>
+                  <Step title="已取消" description={processTime(endTime)}/>
+                </>
+                :
+                <>
+                  <Step title="就诊中" description={status === 'started' ? diagnose : ''} />
+                  <Step title="就诊结束" description={status === 'done' ? processTime(endTime) : ''}/>
+                </>
+              }
             </Steps>
           )}
         </RouteContext.Consumer>
@@ -291,10 +323,7 @@ const Detail = (props) => {
         extra={action}
         className={styles.pageHeader}
         content={getDescription({ ...patientData, reserveTime: startTime})}
-        extraContent={extra(
-            status == 'done' ? '就诊结束' :
-            status == 'started' ? '就诊中' : '尚未就诊',
-        )}
+        extraContent={extra(statusInfos[status].text)}
         tabActiveKey={tabStatus.tabActiveKey}
         onTabChange={onTabChange}
         tabList={[

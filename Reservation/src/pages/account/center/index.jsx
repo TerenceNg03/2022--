@@ -1,13 +1,15 @@
 import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
-import { Avatar, Card, Col, Divider, Input, Row, Tag } from 'antd';
+import { Avatar, Card, Col, Divider, Input, Row, Tag, message } from 'antd';
 import { useRef, useState } from 'react';
 import { Link, useRequest } from 'umi';
+import moment from 'moment';
 import styles from './Center.less';
-import Records from './components/Applications';
-import Reservations from './components/Articles';
-import Bills from './components/Projects';
+import Reservations from './components/Reservations';
+import Records from './components/Records';
+import Bills from './components/Bills';
 import { queryCurrent, queryReservations, queryRecords, queryBills } from './service';
+import { changeStatus } from '../../detail/service';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 
 const operationTabList = [
@@ -112,9 +114,7 @@ const Center = () => {
   const [tabKey, setTabKey] = useState('reservations');
   const [userData, setUserData] = useState({});
 
-  const { data: currentUser, loading } = useRequest(() => {
-      return queryCurrentUser();
-    },
+  const { data: currentUser, loading, refresh } = useRequest(queryCurrentUser,
     {
       pollingInterval: 1000 * 1000,
       onSuccess: async (data, params) => {
@@ -126,6 +126,34 @@ const Center = () => {
         });
       }
     }
+  );
+
+  const { run: cancel } = useRequest(
+    (id) => {
+      const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+      return changeStatus({
+        aid: id,
+        action:
+        {
+          status: 'cancelled',
+          end_time: currentTime,
+        }
+      });
+    },
+    {
+      manual: true,
+      onSuccess: (result, params) => {
+        if(result.success){
+          message.success(`预约取消成功`);
+          refresh();
+        } else {
+          message.error(`预约取消失败：${result.message}`);
+        }
+      },
+      onError: (error) => {
+        message.error(`出现错误：${error}`);
+      }
+    },
   );
 
   const renderUserInfo = ({ geographic }) => {
@@ -152,7 +180,7 @@ const Center = () => {
     }
 
     if (tabValue === 'reservations') { //预约记录
-      return <Reservations data={userData.reservations}/>;
+      return <Reservations data={userData.reservations} onCancel={cancel}/>;
     }
 
     if (tabValue === 'records') { //过往病历

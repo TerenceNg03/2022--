@@ -10,7 +10,7 @@ import styles from './style.less';
 const Option = Select.Option;
 const { Search } = Input;
 
-export const BasicList = () => {
+const DoctorList = () => {
   const [done, setDone] = useState(false);
   const [visible, setVisible] = useState(false);
   const [current, setCurrent] = useState(undefined);
@@ -48,7 +48,7 @@ export const BasicList = () => {
         }
       },
       onError: (error) => {
-        message.error(`出现错误：${result.message}`);
+        message.error(`出现错误：${error}`);
       }
     },
   );
@@ -179,4 +179,4 @@ export const BasicList = () => {
     </div>
   );
 };
-export default BasicList;
+export default DoctorList;
