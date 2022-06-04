@@ -8,30 +8,30 @@
  */
 export default {
   dev: {
-    '/api': {
+    '/api/reservation': {
       //target: 'https://preview.pro.ant.design',
       target: 'http://127.0.0.1',
       changeOrigin: true,
       pathRewrite: {
-        '^/api': '/SE/back',
+        '^/api/reservation': '/SE/back',
       },
     },
   },
   test: {
-    '/api': {
+    '/api/reservation': {
       target: 'http://127.0.0.1',
       changeOrigin: true,
       pathRewrite: {
-        '^/api': '/SE/back',
+        '^/api/reservation': '/SE/back',
       },
     },
   },
   pre: {
-    '/api': {
+    '/api/reservation': {
       target: 'your pre url',
       changeOrigin: true,
       pathRewrite: {
-        '^': '',
+        '^/api/reservation': '/SE/back',
       },
     },
   },

@@ -115,26 +115,6 @@
       },
       "x-swagger-router-controller": "api"
     },
-    "/api/notices": {
-      "summary": "getNotices",
-      "description": "NoticeIconItem",
-      "get": {
-        "tags": ["api"],
-        "operationId": "getNotices",
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NoticeIconList"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/swagger": {
       "x-swagger-pipe": "swagger_raw"
     }

@@ -3,7 +3,8 @@ import { Select, Avatar, Card, Input, List, message } from 'antd';
 import { useState } from 'react';
 import { useRequest } from 'umi';
 import OperationModal from './components/OperationModal';
-import { queryHospitalList, queryDepartmentList, queryDoctorList, reserveDoctor } from './service';
+import { queryHospitalList, queryDepartmentList, queryDoctorList } from '@/services/management';
+import { reserveDoctor } from '@/services/reservation';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import styles from './style.less';
 

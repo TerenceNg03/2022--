@@ -2,7 +2,7 @@ import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
 import { Link, useRequest } from 'umi';
 import { useRef } from 'react';
-import { queryReserveList } from './service';
+import { queryReserveList } from '@/services/reservation';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 
 export const TableList = () => {

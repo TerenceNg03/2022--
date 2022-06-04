@@ -8,8 +8,9 @@ import styles from './Center.less';
 import Reservations from './components/Reservations';
 import Records from './components/Records';
 import Bills from './components/Bills';
-import { queryCurrent, queryReservations, queryRecords, queryBills } from './service';
-import { changeStatus } from '../detail/service';
+import { queryReservations, changeStatus } from '@/services/reservation';
+import { queryRecords } from '@/services/record';
+import { queryBills } from '@/services/pharmacy';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 
 const operationTabList = [

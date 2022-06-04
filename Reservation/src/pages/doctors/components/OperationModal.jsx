@@ -4,7 +4,8 @@ import { useState, useRef } from 'react';
 import { useRequest } from 'umi';
 import moment from 'moment';
 import styles from '../style.less';
-import { querySchedule, queryOccupiedRanges } from '../service';
+import { querySchedule } from '@/services/management';
+import { queryOccupiedRanges } from '@/services/reservation';
 
 const { Option } = Select;
 
