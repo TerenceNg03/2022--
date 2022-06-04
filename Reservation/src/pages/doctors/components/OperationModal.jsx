@@ -115,13 +115,13 @@ const OperationModal = (props) => {
                 placeholder="选择预约时间段"
               >
                 {
-                  daySchedule.map((range) => {
+                  daySchedule.map((range, index) => {
                     const rangeString = timeRangeToString(range);
                     const occupied = occupiedRanges.has(rangeString);
                     const past = moment(choosenDate + ' ' + range.start).isBefore(moment());
                     return <Option
                       value={rangeString}
-                      key={timeRangeToString}
+                      key={index}
                       disabled={occupied || past}
                     >
                       {timeRangeToString(range) + (past ? '（时间已过）' : occupied ? '（预约已满）' : '')}

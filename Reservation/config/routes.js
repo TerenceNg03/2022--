@@ -14,13 +14,13 @@ export default [
     routes: [
       {
         path: '/',
-        redirect: '/center',
+        redirect: './center',
       },
       {
         path: '/center',
         name: 'center',
         icon: 'user',
-        component: './account/center',
+        component: './center',
         access: 'canPatient',
       },
       {

@@ -9,7 +9,7 @@ import Reservations from './components/Reservations';
 import Records from './components/Records';
 import Bills from './components/Bills';
 import { queryCurrent, queryReservations, queryRecords, queryBills } from './service';
-import { changeStatus } from '../../detail/service';
+import { changeStatus } from '../detail/service';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 
 const operationTabList = [
