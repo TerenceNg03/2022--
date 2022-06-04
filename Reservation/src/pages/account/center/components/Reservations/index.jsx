@@ -40,7 +40,7 @@ const Reservations = (props) => {
       key: 'range',
       render: (_, record) => (
         <span>
-          {moment(record.expire_time).format('HH:mm:ss')}~{moment(record.expire_time).format('HH:mm:ss')}
+          {moment(record.start_time).format('HH:mm:ss')}~{moment(record.expire_time).format('HH:mm:ss')}
         </span>
       ),
     },

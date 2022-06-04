@@ -85,76 +85,76 @@ function getFakeArrangement(req, res) {
     data: {
       0: [
         {
-          start: "12:00",
-          end: "13:00",
+          start: "12:00:00",
+          end: "13:00:00",
         },
         {
-          start: "15:00",
-          end: "16:00",
+          start: "15:00:00",
+          end: "16:00:00",
         },
       ],
       1: [
         {
-          start: "13:00",
-          end: "14:00",
+          start: "13:00:00",
+          end: "14:00:00",
         },
       ],
       2: [
         {
-          start: "12:00",
-          end: "13:00",
+          start: "12:00:00",
+          end: "13:00:00",
         },
         {
-          start: "16:00",
-          end: "16:30",
+          start: "16:00:00",
+          end: "16:30:00",
         },
       ],
       3: [
         {
-          start: "12:00",
-          end: "13:00",
+          start: "12:00:00",
+          end: "13:00:00",
         },
       ],
       4: [
         {
-          start: "12:00",
-          end: "13:00",
+          start: "12:00:00",
+          end: "13:00:00",
         },
       ],
       5: [
         {
-          start: "00:00",
-          end: "01:00",
+          start: "00:00:00",
+          end: "01:00:00",
         },
         {
-          start: "12:00",
-          end: "13:00",
+          start: "12:00:00",
+          end: "13:00:00",
         },
       ],
       6: [
         {
-          start: "13:00",
-          end: "14:00",
+          start: "13:00:00",
+          end: "14:00:00",
         },
       ],
     },
   });
 }
 
-function getFakePickedTime(req, res) {
+function getFakeOccupiedRanges(req, res) {
   return res.json({
     success: true,
     data: {
       0: [
         {
-          start: "15:00",
-          end: "16:00",
+          start: "15:00:00",
+          end: "16:00:00",
         },
       ],
       1: [
         {
-          start: "13:00",
-          end: "14:00",
+          start: "13:00:00",
+          end: "14:00:00",
         },
       ],
       2: [
@@ -165,8 +165,8 @@ function getFakePickedTime(req, res) {
       ],
       4: [
         {
-          start: "12:00",
-          end: "13:00",
+          start: "12:00:00",
+          end: "13:00:00",
         },
       ],
       5: [
@@ -188,6 +188,6 @@ export default {
   'GET  /api/hospital': getFakeHospitals,
   'GET  /api/dept': getFakeDepartments,
   'POST /api/make_appoint': postFakeReservation,
-  'GET  /api/arrange': getFakeArrangement,
-  'GET  /api/occupation': getFakePickedTime,
+  'GET  /api/arrange/:id': getFakeArrangement,
+  'GET  /api/occupation': getFakeOccupiedRanges,
 };

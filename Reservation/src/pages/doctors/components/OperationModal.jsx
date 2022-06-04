@@ -8,7 +8,7 @@ import { querySchedule, queryOccupiedRanges } from '../service';
 
 const { Option } = Select;
 
-const timeRangeToString = range => `${range.start}~${range.end}`;
+const timeRangeToString = range => `${moment(range.start, 'HH:mm:ss').format("HH:mm")}~${moment(range.end, 'HH:mm:ss').format("HH:mm")}`;
 
 const OperationModal = (props) => {
   const [timeVisible, setTimeVisible] = useState(false);
@@ -19,16 +19,20 @@ const OperationModal = (props) => {
 
   const { done, visible, current, onReturn, onSubmit} = props;
 
-  const { data: weekTimepicked } = useRequest(() => {
+  const handleReturn = () => {
+    setTimeVisible(false);
+    onReturn();
+  }
+
+  const { data: occupations, loading: loadingOccupations, run: getOccupations } = useRequest(() => {
     return queryOccupiedRanges({
-      id: current.id,
-      date: moment().format("YYYY-MM-DD"),
+      doctor_id: current.id,
     });
   }, { refreshDeps: [current.id] });
 
-  const { data: schedule } = useRequest(async () => {
+  const { data: schedule, loading: loadingSchedule, run: getSchedule } = useRequest(() => {
     return querySchedule({
-      id: current.id,
+      doctor_id: current.id,
     });
   }, { refreshDeps: [current.id] });
 
@@ -54,13 +58,14 @@ const OperationModal = (props) => {
           start_time: moment(values.date + ' ' + start_time).format('YYYY-MM-DD HH:mm:ss'),
           expire_time: moment(values.date + ' ' + expire_time).format('YYYY-MM-DD HH:mm:ss'),
         });
+        getOccupations();
       }}
       //initialValues={current}
       submitter={{
         render: (props, dom) => (done ? false : dom),
       }}
       modalProps={{
-        onCancel: onReturn,
+        onCancel: handleReturn,
         destroyOnClose: true,
         bodyStyle: done
           ? {
@@ -80,7 +85,7 @@ const OperationModal = (props) => {
               setTimeVisible(true);
               setChoosenDate(dateString);
               setDaySchedule(schedule[weekday]);
-              setOccupiedRanges(new Set(weekTimepicked[weekday].map(item => timeRangeToString(item))));
+              setOccupiedRanges(new Set(occupations[weekday]?.map(item => timeRangeToString(item))));
               formRef.current.resetFields(['range']);
             }}
             rules={[
@@ -144,7 +149,7 @@ const OperationModal = (props) => {
           title="预约成功"
           subTitle={<>您已成功预约{current.name}。</>}
           extra={
-            <Button type="primary" onClick={onReturn}>
+            <Button type="primary" onClick={handleReturn}>
               关闭
             </Button>
           }

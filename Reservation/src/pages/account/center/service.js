@@ -1,22 +1,22 @@
 import { request } from 'umi';
 
-export async function queryReservations(data) {
+export async function queryReservations(params) {
   return request('/api/query_patient.php', {
-    method: 'POST',
-    data: data,
+    method: 'GET',
+    params: params,
   });
 }
 
-export async function queryRecords(data) {
+export async function queryRecords(params) {
   return request('/api/get_records', {
     method: 'GET',
-    data: data,
+    params: params,
   });
 }
 
-export async function queryBills(data) {
+export async function queryBills(params) {
   return request('/api/get_bills', {
     method: 'GET',
-    data: data,
+    params: params,
   });
 }

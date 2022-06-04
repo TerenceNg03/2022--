@@ -33,7 +33,12 @@ const getDescription = (patientData) => (
     <Descriptions.Item label="性别">{patientData.sex}</Descriptions.Item>
     <Descriptions.Item label="身份证号">{patientData.IDCardNumber}</Descriptions.Item>
     <Descriptions.Item label="手机号">{patientData.diagNumber}</Descriptions.Item>
-    <Descriptions.Item label="预约时间">{patientData.reserveTime}</Descriptions.Item>
+    <Descriptions.Item label="预约日期">
+      {moment(patientData.reserveTime).format('YYYY-MM-DD')}
+    </Descriptions.Item>
+    <Descriptions.Item label="预约时间">
+      {moment(patientData.reserveTime).format('HH:mm:ss')}~{moment(patientData.expireTime).format('HH:mm:ss')}
+    </Descriptions.Item>
   </Descriptions>
 );
 
@@ -99,7 +104,13 @@ const Detail = (props) => {
   const [status, setStatus] = useState(props.location.state?.record.status);
   const [endTime, setEndTime] = useState(props.location.state?.record.end_time);
 
-  const { app_id: id, patient_id: pid, start_time: startTime, description } = props.location.state?.record;
+  const {
+    app_id: id,
+    patient_id: pid,
+    start_time: reserveTime,
+    expire_time: expireTime,
+    description
+  } = props.location.state?.record;
 
   const onTabChange = (tabActiveKey) => {
     setTabStatus({ ...tabStatus, tabActiveKey });
@@ -143,7 +154,7 @@ const Detail = (props) => {
   //     let data = {
   //       id: pid,
   //       reserveId: id,
-  //       diagDate: startTime,
+  //       diagDate: reserveTime,
   //       diagnosis: diagnosis,
   //     };
   //     // let res = await postDiagnosis({ pId: patientData.id, rId: patientData.reserveId });//同时改变state
@@ -276,7 +287,7 @@ const Detail = (props) => {
               progressDot={<></>}
               current={statusInfos[status].step}
             >
-              <Step title="预约成功" description={processTime(startTime)} />
+              <Step title="就诊开始" description={processTime(reserveTime)} />
               {
                 status == 'cancelled'
                 ?
@@ -322,7 +333,7 @@ const Detail = (props) => {
         title={'患者：' + patientData.name}
         extra={action}
         className={styles.pageHeader}
-        content={getDescription({ ...patientData, reserveTime: startTime})}
+        content={getDescription({ ...patientData, reserveTime: reserveTime, expireTime})}
         extraContent={extra(statusInfos[status].text)}
         tabActiveKey={tabStatus.tabActiveKey}
         onTabChange={onTabChange}

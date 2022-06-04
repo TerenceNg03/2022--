@@ -36,7 +36,7 @@ export async function queryDoctorList(params) {
   if(hospital && department) {
     return request('/api/doctor/', {
       method: 'GET',
-      data: {
+      params: {
         hospital,
         department,
       },
@@ -51,16 +51,17 @@ export async function reserveDoctor(data) {
   });
 }
 
-export async function querySchedule(data) {
-  return request('/api/arrange', {
+export async function querySchedule(params) {
+  const { doctor_id, ...rest } = params
+
+  return request(`/api/arrange/${doctor_id}`, {
     method: 'GET',
-    data: data,
   });
 }
 
-export async function queryOccupiedRanges(data) {
-  return request('/api/occupation', {
+export async function queryOccupiedRanges(params) {
+  return request('/api/query_within_a_week.php', {
     method: 'GET',
-    data: data,
+    params: params,
   });
 }

@@ -187,5 +187,5 @@ function QueryReserveList(req, res, data) {
 // }
 
 export default {
-  'GET /api/reserveList/queryList': QueryReserveList,
+  'GET /api/reserveList': QueryReserveList,
 };
