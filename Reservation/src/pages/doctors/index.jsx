@@ -1,7 +1,7 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import { Select, Avatar, Card, Input, List, message } from 'antd';
 import { useState } from 'react';
-import { useRequest } from 'umi';
+import { useRequest, useModel } from 'umi';
 import OperationModal from './components/OperationModal';
 import { queryHospitalList, queryDepartmentList, queryDoctorList } from '@/services/management';
 import { reserveDoctor } from '@/services/reservation';
@@ -18,8 +18,10 @@ const DoctorList = () => {
   const [doctors, setDoctors] = useState([]);
   const [hospital, setHospital] = useState();
   const [department, setDepartment] = useState();
+  const { initialState, setInitialState } = useModel('@@initialState');
 
-  const { data: currentUser } = useRequest(queryCurrentUser);
+  //const { data: currentUser } = useRequest(queryCurrentUser);
+  const currentUser = initialState.currentUser;
 
   const { data: hospitals } = useRequest(queryHospitalList);
 
@@ -35,7 +37,7 @@ const DoctorList = () => {
     {
       refreshDeps: [hospital, department],
       onSuccess: () => {
-        setDoctors(data);
+        setDoctors(data.doctorInfos);
       }
     },
   );
@@ -108,7 +110,7 @@ const DoctorList = () => {
             onChange={(value) => {setHospital(value);}}
           >
             { hospitals &&
-              hospitals.map((item) => {
+              hospitals.names.map((item) => {
                 return <Option value={item} key={item}> {item} </Option>;
               })
             }
@@ -123,7 +125,7 @@ const DoctorList = () => {
             onChange={(value) => {setDepartment(value);}}
           >
             { departments &&
-              departments.map((item) => {
+              departments.names.map((item) => {
                 return <Option value={item} key={item}> {item} </Option>;
               })
             }

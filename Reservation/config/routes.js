@@ -1,13 +1,5 @@
 export default [
   {
-    path: '/login',
-    layout: false,
-    name: 'login',
-    component: './login',
-    hideInMenu: true,
-  },
-
-  {
     path: '/',
     name: 'EE',
     flatMenu: true,
@@ -21,7 +13,6 @@ export default [
         name: 'center',
         icon: 'user',
         component: './center',
-        access: 'canPatient',
       },
       {
         path: '/doctors',

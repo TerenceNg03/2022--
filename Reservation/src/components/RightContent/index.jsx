@@ -1,8 +1,5 @@
-import { QuestionCircleOutlined } from '@ant-design/icons';
 import { Space } from 'antd';
-import { SelectLang, useModel } from 'umi';
-import HeaderSearch from '../HeaderSearch';
-import NoticeIconView from '../NoticeIcon';
+import { useModel } from 'umi';
 import Avatar from './AvatarDropdown';
 import styles from './index.less';
 
@@ -24,7 +21,6 @@ const GlobalHeaderRight = () => {
     <Space className={className}>
       {/*<NoticeIconView />*/}
       <Avatar menu />
-      <SelectLang className={styles.action} />
     </Space>
   );
 };

@@ -2,132 +2,139 @@ import { HomeOutlined, PlusOutlined } from '@ant-design/icons';
 import { GridContent } from '@ant-design/pro-layout';
 import { Avatar, Card, Col, Divider, Input, Row, Tag, message } from 'antd';
 import { useRef, useState } from 'react';
-import { Link, useRequest } from 'umi';
+import { Link, useRequest, useModel } from 'umi';
 import moment from 'moment';
 import styles from './Center.less';
 import Reservations from './components/Reservations';
 import Records from './components/Records';
 import Bills from './components/Bills';
+import Schedule from './components/Schedule';
 import { queryReservations, changeStatus } from '@/services/reservation';
+import { querySchedule } from '@/services/management';
 import { queryRecords } from '@/services/record';
 import { queryBills } from '@/services/pharmacy';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 
-const operationTabList = [
-  {
-    key: 'reservations',
-    tab: (
-      <span>
-        预约记录{' '}
-      </span>
-    ),
-  },
-  {
-    key: 'records',
-    tab: (
-      <span>
-        病历{' '}
-      </span>
-    ),
-  },
-  {
-    key: 'bills',
-    tab: (
-      <span>
-        账单{' '}
-      </span>
-    ),
-  },
-];
+// const TagList = ({ tags }) => {
+//   const ref = useRef(null);
+//   const [newTags, setNewTags] = useState([]);
+//   const [inputVisible, setInputVisible] = useState(false);
+//   const [inputValue, setInputValue] = useState('');
 
-const TagList = ({ tags }) => {
-  const ref = useRef(null);
-  const [newTags, setNewTags] = useState([]);
-  const [inputVisible, setInputVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+//   const showInput = () => {
+//     setInputVisible(true);
 
-  const showInput = () => {
-    setInputVisible(true);
+//     if (ref.current) {
+//       // eslint-disable-next-line no-unused-expressions
+//       ref.current?.focus();
+//     }
+//   };
 
-    if (ref.current) {
-      // eslint-disable-next-line no-unused-expressions
-      ref.current?.focus();
-    }
-  };
+//   const handleInputChange = (e) => {
+//     setInputValue(e.target.value);
+//   };
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
+//   const handleInputConfirm = () => {
+//     let tempsTags = [...newTags];
 
-  const handleInputConfirm = () => {
-    let tempsTags = [...newTags];
+//     if (inputValue && tempsTags.filter((tag) => tag.label === inputValue).length === 0) {
+//       tempsTags = [
+//         ...tempsTags,
+//         {
+//           key: `new-${tempsTags.length}`,
+//           label: inputValue,
+//         },
+//       ];
+//     }
 
-    if (inputValue && tempsTags.filter((tag) => tag.label === inputValue).length === 0) {
-      tempsTags = [
-        ...tempsTags,
-        {
-          key: `new-${tempsTags.length}`,
-          label: inputValue,
-        },
-      ];
-    }
+//     setNewTags(tempsTags);
+//     setInputVisible(false);
+//     setInputValue('');
+//   };
 
-    setNewTags(tempsTags);
-    setInputVisible(false);
-    setInputValue('');
-  };
-
-  return (
-    <div className={styles.tags}>
-      <div className={styles.tagsTitle}>标签</div>
-      {(tags || []).concat(newTags).map((item) => (
-        <Tag key={item.key}>{item.label}</Tag>
-      ))}
-      {inputVisible && (
-        <Input
-          ref={ref}
-          type="text"
-          size="small"
-          style={{
-            width: 78,
-          }}
-          value={inputValue}
-          onChange={handleInputChange}
-          onBlur={handleInputConfirm}
-          onPressEnter={handleInputConfirm}
-        />
-      )}
-      {!inputVisible && (
-        <Tag
-          onClick={showInput}
-          style={{
-            borderStyle: 'dashed',
-          }}
-        >
-          <PlusOutlined />
-        </Tag>
-      )}
-    </div>
-  );
-};
+//   return (
+//     <div className={styles.tags}>
+//       <div className={styles.tagsTitle}>标签</div>
+//       {(tags || []).concat(newTags).map((item) => (
+//         <Tag key={item.key}>{item.label}</Tag>
+//       ))}
+//       {inputVisible && (
+//         <Input
+//           ref={ref}
+//           type="text"
+//           size="small"
+//           style={{
+//             width: 78,
+//           }}
+//           value={inputValue}
+//           onChange={handleInputChange}
+//           onBlur={handleInputConfirm}
+//           onPressEnter={handleInputConfirm}
+//         />
+//       )}
+//       {!inputVisible && (
+//         <Tag
+//           onClick={showInput}
+//           style={{
+//             borderStyle: 'dashed',
+//           }}
+//         >
+//           <PlusOutlined />
+//         </Tag>
+//       )}
+//     </div>
+//   );
+// };
 
 const Center = () => {
-  const [tabKey, setTabKey] = useState('reservations');
-  const [userData, setUserData] = useState({});
+  const { initialState, setInitialState } = useModel('@@initialState');
 
-  const { data: currentUser, loading, refresh } = useRequest(queryCurrentUser,
+  const currentUser = initialState.currentUser;
+
+  const [userData, setUserData] = useState({});
+  const [tabKey, setTabKey] = useState(currentUser.access === 'PATIENT' ? 'reservations' : 'schedule');
+
+  const { refresh } = useRequest(() => {return Promise.resolve('')},
     {
       pollingInterval: 1000 * 1000,
-      onSuccess: async (data, params) => {
-        const patient_id = data.id;
-        setUserData({
-          reservations: (await queryReservations({ patient_id })).data,
-          records: (await queryRecords({ patient_id })).data,
-          bills: (await queryBills({ patient_id })).data,
-        });
+      onSuccess: async () => {
+        if(currentUser.access === 'PATIENT') {
+          const patient_id = currentUser.id;
+          setUserData({
+            reservations: (await queryReservations({ patient_id })).data,
+            records: (await queryRecords({ patient_id })).data,
+            bills: (await queryBills({ patient_id })).data,
+          });
+        }
       }
     }
   );
+
+  if(currentUser.access === 'DOCTOR') {
+    useRequest(() => {
+      return querySchedule({
+        doctor_id: currentUser.id,
+      });
+    },
+    {
+      formatResult: (res) => {
+        const arranges = res?.data?.arranges || [];
+        return arranges.map((item) => {
+          var arrs = [];
+          for(var i = 0; i < item.length; i+=2) {
+            arrs.push({
+              start: item[i],
+              end: item[i+1],
+            });
+          }
+          return arrs;
+        });
+      },
+      onSuccess: (result) => {
+        setUserData({ arrangements: result });
+      }
+    })
+  }
 
   const { run: cancel } = useRequest(
     (id) => {
@@ -157,6 +164,31 @@ const Center = () => {
     },
   );
 
+  const getTabList = (user) => (
+    user.access === 'PATIENT' ?
+    [
+      {
+        key: 'reservations',
+        tab: ( <span>预约记录</span> ),
+      },
+      {
+        key: 'records',
+        tab: ( <span>病历</span> ),
+      },
+      {
+        key: 'bills',
+        tab: ( <span>账单</span> ),
+      },
+    ]
+    :
+    [
+      {
+        key: 'schedule',
+        tab: ( <span>我的排班</span> ),
+      },
+    ]
+  );
+
   const renderUserInfo = ({ geographic }) => {
     return (
       <div className={styles.detail}>
@@ -166,9 +198,9 @@ const Center = () => {
               marginRight: 8,
             }}
           />
-          { geographic.province || '' } 
-          { geographic.city || '' }
-          { geographic.address || '' }
+          { geographic?.province || '' } 
+          { geographic?.city || '' }
+          { geographic?.address || '' }
         </p>
       </div>
     );
@@ -192,6 +224,10 @@ const Center = () => {
       return <Bills data={userData.bills}/>;
     }
 
+    if (tabValue === 'schedule') { //账单
+      return <Schedule data={userData.arrangements}/>;
+    }
+
     return null;
   };
 
@@ -204,18 +240,15 @@ const Center = () => {
             style={{
               marginBottom: 24,
             }}
-            loading={loading}
           >
-            {!loading && currentUser && (
+            {currentUser && (
               <div>
                 <div className={styles.avatarHolder}>
                   <img alt="" src={currentUser.avatar} />
                   <div className={styles.name}>{currentUser.name}</div>
-                  <div>{currentUser?.signature}</div>
                 </div>
                 {renderUserInfo(currentUser)}
                 <Divider dashed />
-                <TagList tags={currentUser.tags || []} />
                 <Divider
                   style={{
                     marginTop: 16,
@@ -230,7 +263,7 @@ const Center = () => {
           <Card
             className={styles.tabsCard}
             bordered={false}
-            tabList={operationTabList}
+            tabList={getTabList(currentUser)}
             activeTabKey={tabKey}
             onTabChange={(_tabKey) => {
               setTabKey(_tabKey);

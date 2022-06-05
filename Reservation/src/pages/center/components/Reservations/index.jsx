@@ -1,6 +1,5 @@
 import { Space, Table, Typography, Badge } from 'antd';
 import moment from 'moment';
-import { changeStatus } from '@/services/reservation';
 
 const Reservations = (props) => {
 

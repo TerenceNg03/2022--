@@ -35,7 +35,22 @@ const OperationModal = (props) => {
     return querySchedule({
       doctor_id: current.id,
     });
-  }, { refreshDeps: [current.id] });
+  }, {
+    refreshDeps: [current.id],
+    formatResult: (res) => {
+      const arranges = res?.data?.arranges || [];
+      return arranges.map((item) => {
+        var arrs = [];
+        for(var i = 0; i < item.length; i+=2) {
+          arrs.push({
+            start: item[i],
+            end: item[i+1],
+          });
+        }
+        return arrs;
+      });
+    },
+  });
 
   const disabledDate = (current) => {
     if(!current) return false;

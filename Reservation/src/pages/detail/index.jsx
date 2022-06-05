@@ -14,7 +14,7 @@ import {
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
 import { useState } from 'react';
 import classNames from 'classnames';
-import { useRequest, history } from 'umi';
+import { useRequest, useModel, history } from 'umi';
 import { queryPatientInfo } from '@/services/management';
 import { changeStatus } from '@/services/reservation';
 import { writeDiagnosis } from '@/services/record';
@@ -49,55 +49,6 @@ const processTime = (time) => (
     <div>{time}</div>
   </div>
 );
-
-// const popoverContent = (
-//   <div
-//     style={{
-//       width: 160,
-//     }}
-//   >
-//     吴加号
-//     <span
-//       className={styles.textSecondary}
-//       style={{
-//         float: 'right',
-//       }}
-//     >
-//       <Badge
-//         status="default"
-//         text={
-//           <span
-//             style={{
-//               color: 'rgba(0, 0, 0, 0.45)',
-//             }}
-//           >
-//             未响应
-//           </span>
-//         }
-//       />
-//     </span>
-//     <div
-//       className={styles.textSecondary}
-//       style={{
-//         marginTop: 4,
-//       }}
-//     >
-//       耗时：2小时25分钟
-//     </div>
-//   </div>
-// );
-
-// const customDot = (dot, { status }) => {
-//   if (status === 'process') {
-//     return (
-//       <Popover placement="topLeft" arrowPointAtCenter content={popoverContent}>
-//         <span>{dot}</span>
-//       </Popover>
-//     );
-//   }
-
-//   return dot;
-// };
 
 const Detail = (props) => {
   const [tabStatus, setTabStatus] = useState({

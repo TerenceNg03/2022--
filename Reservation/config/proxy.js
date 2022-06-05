@@ -9,11 +9,17 @@
 export default {
   dev: {
     '/api/reservation': {
-      //target: 'https://preview.pro.ant.design',
       target: 'http://127.0.0.1',
       changeOrigin: true,
       pathRewrite: {
         '^/api/reservation': '/SE/back',
+      },
+    },
+    '/api/management': {
+      target: 'http://124.220.171.17:3000',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api/management': '/api',
       },
     },
   },

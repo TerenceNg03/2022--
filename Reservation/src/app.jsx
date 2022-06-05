@@ -1,12 +1,50 @@
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
+import { message } from 'antd';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import { PageLoading } from '@ant-design/pro-layout';
 import { history, Link } from 'umi';
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
+import { verifyAccount } from '@/services/management'
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
+
+const verifyLogin = () => {
+  if(!localStorage?.user) {
+    const currentUrl = window.location.href;
+    const afterProt = currentUrl.indexOf("//") + 2;
+    const redir = encodeURIComponent(currentUrl.substring(afterProt));
+    window.location.href = `http://124.220.171.17:3000/login?redir=${redir}`;
+  }
+}
+
+const fetchUserInfo = async () => {
+  verifyLogin();
+
+  //const msg = await queryCurrentUser();
+  const verification = await verifyAccount();
+
+  if(!verification.code) {
+    message.success(verification.message);
+  } else {
+    message.error(verification.message);
+  }
+
+  const info = {
+    access: verification.data.role,
+    name: verification.data.userName,
+    id: JSON.parse(localStorage?.user).userId,
+    avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
+    geographic: {
+      province: '浙江省',
+      city: '杭州市',
+      address: '西湖区工专路 77 号',
+    },
+  }
+
+  return info;
+};
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -17,29 +55,23 @@ export const initialStateConfig = {
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState() {
-  const fetchUserInfo = async () => {
-    try {
-      const msg = await queryCurrentUser();
-      return msg.data;
-    } catch (error) {
-      history.push(loginPath);
-    }
 
-    return undefined;
-  };
+  const token = window.location.search.substring(1);
 
-  // 如果是登录页面，不执行
-  if (history.location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
-    return {
-      fetchUserInfo,
-      currentUser,
-      settings: {},
-    };
+  if(token) {
+    const params = decodeURIComponent(token).split('&');
+    const user = {};
+    params.forEach((param) => {
+      const key_value = param.split('=');
+      user[key_value[0]] = key_value[1];
+      localStorage["user"] = JSON.stringify(user);
+    });
   }
-
+  
+  const currentUser = await fetchUserInfo();
   return {
     fetchUserInfo,
+    currentUser,
     settings: {},
   };
 }
@@ -54,12 +86,7 @@ export const layout = ({ initialState }) => {
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
-      const { location } = history; 
-      
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
-      }
+      verifyLogin();
     },
     links: isDev
       ? [

@@ -180,15 +180,15 @@ function getFakeOccupiedRanges(req, res) {
 }
 
 export default {
-  'GET  /api/management/doctor': getFakeDoctors,
-  'GET  /api/management/doctor/all': getFakeDoctors,
-  'GET  /api/management/doctor/hospital/:hospital': getFakeDoctors,
-  'GET  /api/management/doctor/dept/:dept': getFakeDoctors,
+  // 'GET  /api/management/doctor': getFakeDoctors,
+  // 'GET  /api/management/doctor/all': getFakeDoctors,
+  // 'GET  /api/management/doctor/hospital/:hospital': getFakeDoctors,
+  // 'GET  /api/management/doctor/dept/:dept': getFakeDoctors,
 
-  'GET  /api/management/hospital': getFakeHospitals,
-  'GET  /api/management/dept': getFakeDepartments,
-  'GET  /api/management/arrange/:id': getFakeArrangement,
+  // 'GET  /api/management/hospital': getFakeHospitals,
+  // 'GET  /api/management/dept': getFakeDepartments,
+  // 'GET  /api/management/arrange/:id': getFakeArrangement,
   
-  'GET  /api/reservation/occupation': getFakeOccupiedRanges,
-  'POST /api/reservation/make_appoint': postFakeReservation,
+  // 'GET  /api/reservation/occupation': getFakeOccupiedRanges,
+  // 'POST /api/reservation/make_appoint': postFakeReservation,
 };

@@ -1,16 +1,16 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Link, useRequest } from 'umi';
+import { Link, useRequest, useModel } from 'umi';
 import { useRef } from 'react';
 import { queryReserveList } from '@/services/reservation';
 import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 
 export const TableList = () => {
   const actionRef = useRef();
+  const { initialState, setInitialState } = useModel('@@initialState');
 
-  const { data: currentUser, loading } = useRequest(() => {
-    return queryCurrentUser();
-  });
+  //const { data: currentUser, loading } = useRequest(queryCurrentUser);
+  const currentUser = initialState.currentUser;
 
   const columns = [
     {
@@ -83,7 +83,6 @@ export const TableList = () => {
   ];
   return (
     <PageContainer>
-      { !loading && currentUser && (
         <ProTable
           headerTitle="现有预约"
           columns={columns}
@@ -93,6 +92,7 @@ export const TableList = () => {
             labelWidth: 80,
           }}
           request={ async (params, sorter, filter) => {
+            console.log(currentUser);
             const data = { doctor_id : currentUser.id, ...params };
             const res = await queryReserveList(data);
             const nameFilter = item => data.patient_id ? `${item.patient_id}`.includes(`${data.patient_id}`) : true;
@@ -102,7 +102,6 @@ export const TableList = () => {
             });
           }}
         />
-      )}
     </PageContainer>
   );
 };
