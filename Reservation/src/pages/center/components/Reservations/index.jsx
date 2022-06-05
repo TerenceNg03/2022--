@@ -55,7 +55,7 @@ const Reservations = (props) => {
     },
     {
       title: '医生',
-      dataIndex: 'doctor_id',
+      dataIndex: 'doctor_name',
       key: 'doctor',
     },
     {

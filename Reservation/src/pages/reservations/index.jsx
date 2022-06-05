@@ -19,7 +19,7 @@ export const TableList = () => {
     },
     {
       title: '患者名字',
-      dataIndex: 'patient_id',
+      dataIndex: 'patient_name',
     },
     {
       title: '患者描述',
