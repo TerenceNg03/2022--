@@ -4,7 +4,6 @@ import { message } from 'antd';
 import { BookOutlined, LinkOutlined } from '@ant-design/icons';
 import { PageLoading } from '@ant-design/pro-layout';
 import { history, Link } from 'umi';
-import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import { verifyAccount } from '@/services/management'
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -22,7 +21,6 @@ const verifyLogin = () => {
 const fetchUserInfo = async () => {
   verifyLogin();
 
-  //const msg = await queryCurrentUser();
   const verification = await verifyAccount();
 
   if(!verification.code) {

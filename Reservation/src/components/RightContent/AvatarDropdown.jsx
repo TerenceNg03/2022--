@@ -1,4 +1,3 @@
-import { outLogin } from '@/services/ant-design-pro/api';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import { stringify } from 'querystring';
@@ -6,24 +5,6 @@ import { useCallback } from 'react';
 import { history, useModel } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-
-/**
- * 退出登录，并且将当前的 url 保存
- */
-const loginOut = async () => {
-  await outLogin();
-  const { query = {}, pathname } = history.location;
-  const { redirect } = query; // Note: There may be security issues, please note
-
-  if (window.location.pathname !== '/user/login' && !redirect) {
-    history.replace({
-      pathname: '/user/login',
-      search: stringify({
-        redirect: pathname,
-      }),
-    });
-  }
-};
 
 const AvatarDropdown = ({ menu }) => {
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -33,12 +14,9 @@ const AvatarDropdown = ({ menu }) => {
 
       if (key === 'logout') {
         localStorage.removeItem('user');
-        setInitialState((s) => ({ ...s, currentUser: undefined }));
-        loginOut();
+        window.location.href = 'http://124.220.171.17:3000/logout';
         return;
       }
-
-      history.push(`/${key}`);
     },
     [setInitialState],
   );

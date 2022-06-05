@@ -13,13 +13,13 @@ import {
 } from 'antd';
 import { GridContent, PageContainer, RouteContext } from '@ant-design/pro-layout';
 import { useState } from 'react';
+import { useRequest } from 'umi';
 import classNames from 'classnames';
-import { useRequest, useModel, history } from 'umi';
+import moment from 'moment';
 import { queryPatientInfo } from '@/services/management';
 import { changeStatus } from '@/services/reservation';
 import { writeDiagnosis } from '@/services/record';
 import styles from './style.less';
-import moment from 'moment';
 
 const { Step } = Steps;
 const { TextArea } = Input;

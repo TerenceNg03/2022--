@@ -13,7 +13,6 @@ import { queryReservations, changeStatus } from '@/services/reservation';
 import { querySchedule } from '@/services/management';
 import { queryRecords } from '@/services/record';
 import { queryBills } from '@/services/pharmacy';
-import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 
 // const TagList = ({ tags }) => {
 //   const ref = useRef(null);

@@ -5,7 +5,6 @@ import { useRequest, useModel } from 'umi';
 import OperationModal from './components/OperationModal';
 import { queryHospitalList, queryDepartmentList, queryDoctorList } from '@/services/management';
 import { reserveDoctor } from '@/services/reservation';
-import { currentUser as queryCurrentUser } from '@/services/ant-design-pro/api';
 import styles from './style.less';
 
 const Option = Select.Option;
@@ -20,7 +19,6 @@ const DoctorList = () => {
   const [department, setDepartment] = useState();
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  //const { data: currentUser } = useRequest(queryCurrentUser);
   const currentUser = initialState.currentUser;
 
   const { data: hospitals } = useRequest(queryHospitalList);
