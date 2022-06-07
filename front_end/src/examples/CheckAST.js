@@ -12,7 +12,7 @@ const CheckAST = () => {
     return (
         <Form.List name="sps">
             {(fields, { add, remove }) => (
-                <form>
+                <a>
                     {fields.map(({ key, name, ...restField }) => (
                         <Space key={key} style={{ display: 'flex', marginBottom: 0}} align="baseline">
                             <Form.Item
@@ -37,7 +37,7 @@ const CheckAST = () => {
                             新增检查
                         </Button>
                     </Form.Item>
-                </form>
+                </a>
             )}
         </Form.List>
     );

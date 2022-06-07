@@ -1,7 +1,7 @@
 /* eslint import/no-webpack-loader-syntax: off */
 
 import React, { useEffect } from 'react'
-import codeBasic from '!!raw-loader!./examples/Basic.js'
+import codeBasic from '!!raw-loader!./examples/UpdateRecord.js'
 import codeDynamicFields from '!!raw-loader!./examples/DynamicFields.js'
 import codeAsyncDataSource from '!!raw-loader!./examples/AsyncDataSource.js'
 import codeMultipleColumns from '!!raw-loader!./examples/MultipleColumns.js'

@@ -1,16 +1,15 @@
 import React from 'react'
 import { Select } from 'antd'
 import useHash from './useHash'
-import Basic from './examples/Basic'
-import ViewScripts from './examples/ViewScript.js'
+import UpdateRecord from './examples/UpdateRecord.js'
+import ViewScripts from './examples/ViewRecord.js'
 
 import './App.css'
 
 const { Option } = Select
 const examples = {
-  basic: { name: '浙江大学医学院附属第二医院门诊病历', component: Basic },
-  // basic: { name: '浙江大学医学院附属第二医院门诊病历', component: ViewScripts },
-
+  // basic: { name: '浙江大学医学院附属第二医院门诊病历', component: UpdateRecord },
+  basic: { name: '浙江大学医学院附属第二医院门诊病历', component: ViewScripts },
 }
 
 export default () => {
