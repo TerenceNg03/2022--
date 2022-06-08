@@ -1,13 +1,10 @@
 import {
   Input,
   Form,
-  Badge,
-  DatePicker,
   Button,
   Card,
   Statistic,
   Descriptions,
-  Popover,
   Steps,
   message,
 } from 'antd';
@@ -60,6 +57,7 @@ const Detail = (props) => {
   const {
     app_id: id,
     patient_id: pid,
+    patient_name,
     start_time: reserveTime,
     expire_time: expireTime,
     description
@@ -206,9 +204,6 @@ const Detail = (props) => {
               <Form.Item label="预约号" name="diagNumber" rules={[{ type: 'number' }]}>
                 <Input defaultValue={patientData.diagNumber} />
               </Form.Item>
-              <Form.Item label="日期" name="diagDate" rules={[{ required: true }]}>
-                <DatePicker />
-              </Form.Item>
               <Form.Item label="诊断" name="diagnosis" rules={[{ required: true }]}>
                 <TextArea showCount maxLength={200} />
               </Form.Item>
@@ -283,7 +278,7 @@ const Detail = (props) => {
   return (
     <>
       <PageContainer
-        title={'患者：' + patientData.name}
+        title={'患者：' + patient_name}
         extra={action}
         className={styles.pageHeader}
         content={getDescription({ ...patientData, reserveTime: reserveTime, expireTime})}

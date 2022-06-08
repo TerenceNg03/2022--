@@ -5,24 +5,41 @@ const Bills = (props) => {
   const { data } = props;
 
   if(!data) return false;
-  
-  return <div>{data.map((item) => {
-    return <Descriptions title="账单" bordered key={item.key}>
-    <Descriptions.Item label="姓名">{item.name}</Descriptions.Item>
-    <Descriptions.Item label="是否参保">{item.canbao}</Descriptions.Item>
-    <Descriptions.Item label="支付方式">{item.zhifufangshi}</Descriptions.Item>
-    <Descriptions.Item label="支付时间">{item.ordertime}</Descriptions.Item>
-    <Descriptions.Item label="就诊时间" span={2}>
-      {item.jiuzhentime}
-    </Descriptions.Item>
+
+  const payStates  = {
+    'false' : {
+      state: 'processing',
+      text: '未支付'
+    },
+    'true' : {
+      state: 'success',
+      text: '已支付'
+    },
+  };
+
+
+  return <div>{data.map((bill) => {
+    const payState = payStates[bill.QueueID >= 0];
+    const price = bill.ItemList.reduce((prev, cur) => {
+      return prev + cur.Price * cur.Num;
+    }, 0);
+    return <Descriptions title="账单" bordered key='BillID'>
+    <Descriptions.Item label="时间">{bill.Date}</Descriptions.Item>
+    <Descriptions.Item label="共计支付">{price}</Descriptions.Item>
     <Descriptions.Item label="状态" span={3}>
-      <Badge status={item.state} text={item.text} />
+      <Badge status={payState.state} text={payState.text} />
     </Descriptions.Item>
-    <Descriptions.Item label="共计支付">{item.gongjizhifu}</Descriptions.Item>
-    <Descriptions.Item label="医保代付">{item.yibaodaifu}</Descriptions.Item>
-    <Descriptions.Item label="自费支付">{item.zifeizhifu}</Descriptions.Item>
     <Descriptions.Item label="账单详情">
-      {item.xiangqing}
+      {
+        bill.ItemList.map((medicine) => {
+          return <>
+            <span key='ID'>
+              {medicine.Num}{medicine.Unit}{medicine.Name}（{medicine.Brand}）
+            </span>
+            <br/>
+          </>;
+        })
+      }
     </Descriptions.Item>
     </Descriptions>
   })}</div>;

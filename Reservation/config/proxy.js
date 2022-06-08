@@ -22,6 +22,13 @@ export default {
         '^/api/management': '/api',
       },
     },
+    '/api/pharmacy': {
+      target: 'http://124.220.171.17:6666',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api/pharmacy': '/doctor_interface',
+      },
+    },
   },
   test: {
     '/api/reservation': {

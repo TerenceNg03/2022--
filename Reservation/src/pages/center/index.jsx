@@ -99,10 +99,11 @@ const Center = () => {
       onSuccess: async () => {
         if(currentUser.access === 'PATIENT') {
           const patient_id = currentUser.id;
+
           setUserData({
             reservations: (await queryReservations({ patient_id })).data,
             records: (await queryRecords({ patient_id })).data,
-            bills: (await queryBills({ patient_id })).data,
+            bills: (await queryBills({ patient_id })).BillList,
           });
         }
       }

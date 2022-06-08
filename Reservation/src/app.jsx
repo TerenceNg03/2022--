@@ -9,13 +9,15 @@ import { verifyAccount } from '@/services/management'
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
 
+const jumpToLogin = () => {
+  const currentUrl = window.location.href;
+  const afterProt = currentUrl.indexOf("//") + 2;
+  const redir = encodeURIComponent(currentUrl.substring(afterProt));
+  window.location.href = `http://124.220.171.17:3000/login?redir=${redir}`;
+}
+
 const verifyLogin = () => {
-  if(!localStorage?.user) {
-    const currentUrl = window.location.href;
-    const afterProt = currentUrl.indexOf("//") + 2;
-    const redir = encodeURIComponent(currentUrl.substring(afterProt));
-    window.location.href = `http://124.220.171.17:3000/login?redir=${redir}`;
-  }
+  if(!localStorage.user) jumpToLogin();
 }
 
 const fetchUserInfo = async () => {
@@ -27,6 +29,8 @@ const fetchUserInfo = async () => {
     message.success(verification.message);
   } else {
     message.error(verification.message);
+    localStorage.removeItem('user');
+    jumpToLogin();
   }
 
   const info = {
@@ -62,7 +66,7 @@ export async function getInitialState() {
     params.forEach((param) => {
       const key_value = param.split('=');
       user[key_value[0]] = key_value[1];
-      localStorage["user"] = JSON.stringify(user);
+      localStorage['user'] = JSON.stringify(user);
     });
   }
   

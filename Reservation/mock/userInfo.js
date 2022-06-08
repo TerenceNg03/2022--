@@ -41,34 +41,20 @@ const records = [
 const bills = [
   {
     key: '1',
-    name: '张三',
-    canbao: '是',
-    zhifufangshi: '支付宝',
-    ordertime: '2022-04-24 18:00:00',
-    jiuzhentime: '2019-04-24 18:00:00',
-    address: '浙江大学附属第一医院',
+    paytime: '2022-04-24 18:00:00',
     state: 'success',
     text: '已支付',
-    gongjizhifu: '280',
-    yibaodaifu: '200',
-    zifeizhifu: '80',
+    price: '280',
     xiangqing: "马应龙痔疮膏×1盒：100元,\
     致康胶囊×3盒：100元,\
     医生检查费用：80元",
   },
   {
     key: '2',
-    name: '张三',
-    canbao: '是',
-    zhifufangshi: '支付宝',
-    ordertime: '2022-04-24 18:00:00',
-    jiuzhentime: '2019-04-24 18:00:00',
-    address: '浙江大学附属第一医院',
+    paytime: '2022-04-24 18:00:00',
     state: 'success',
     text: '已支付',
-    gongjizhifu: '280',
-    yibaodaifu: '200',
-    zifeizhifu: '80',
+    price: '280',
     xiangqing: "马应龙痔疮膏×1盒：100元,\
     致康胶囊×3盒：100元,\
     医生检查费用：80元",

@@ -1,8 +1,10 @@
 import { request } from 'umi';
 
 export async function queryBills(params) {
-  return request('/api/pharmacy/get_bills', {
+  return request('/api/pharmacy/querycart/', {
     method: 'GET',
-    params: params,
+    params: {
+      UserID: params.patient_id,
+    },
   });
 }
