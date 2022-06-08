@@ -16,6 +16,7 @@ import moment from 'moment';
 import { queryPatientInfo } from '@/services/management';
 import { changeStatus } from '@/services/reservation';
 import { writeDiagnosis } from '@/services/record';
+import Basic from '../../components/Dignosis/Basic';
 import styles from './style.less';
 
 const { Step } = Steps;
@@ -171,52 +172,14 @@ const Detail = (props) => {
   );
 
   const diagMake = (
-    <GridContent>
-      {/*<Card
-        style={{
-          marginBottom: 24,
-        }}
-      >
-        <div
-        // className={styles.coverCardList}
-        >
-          <div
-            // className={styles.cardList}
-            style={{
-              marginLeft: 0,
-              marginRight: 500,
-            }}
-          >
-            <Form
-              name="basic"
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
-              initialValues={{ remember: true }}
-              onFinish={confirmDiagnosis}
-              autoComplete="off"
-            >
-              <Form.Item label="姓名" name="username">
-                <Input defaultValue={patientData.name} />
-              </Form.Item>
-              <Form.Item label="性别" name="sex">
-                <Input defaultValue={patientData.sex} />
-              </Form.Item>
-              <Form.Item label="预约号" name="diagNumber" rules={[{ type: 'number' }]}>
-                <Input defaultValue={patientData.diagNumber} />
-              </Form.Item>
-              <Form.Item label="诊断" name="diagnosis" rules={[{ required: true }]}>
-                <TextArea showCount maxLength={200} />
-              </Form.Item>
-
-              <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
-            </Form>
-          </div>
-        </div>
-      </Card>*/}
+    <GridContent> 
+      <Card>
+        <h1>
+          浙江大学医学院附属第二医院门诊病历
+          {/* <p className="example-description">{item.description}</p> */}
+        </h1>
+        <Basic/>
+      </Card>
     </GridContent>
   );
 
@@ -290,10 +253,10 @@ const Detail = (props) => {
             key: 'detail',
             tab: '详情',
           },
-          // {
-          //   key: 'diagnosis',
-          //   tab: '诊断单',
-          // },
+          {
+            key: 'diagnosis',
+            tab: '诊断单',
+          },
         ]}
       >
         {content[tabStatus.tabActiveKey]}
