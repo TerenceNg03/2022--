@@ -16,7 +16,7 @@ import moment from 'moment';
 import { queryPatientInfo } from '@/services/management';
 import { changeStatus } from '@/services/reservation';
 import { writeDiagnosis } from '@/services/record';
-import Basic from '../../components/Dignosis/Basic';
+import UpdateRecord from '../../components/Dignosis/UpdateRecord';
 import styles from './style.less';
 
 const { Step } = Steps;
@@ -57,7 +57,7 @@ const Detail = (props) => {
 
   const {
     app_id: id,
-    patient_id: pid,
+    patient_id,
     patient_name,
     start_time: reserveTime,
     expire_time: expireTime,
@@ -70,7 +70,7 @@ const Detail = (props) => {
 
   const { data: _patientData } = useRequest(() => {
       return queryPatientInfo({
-        id: pid,
+        id: patient_id,
       });
     }
   );
@@ -104,12 +104,12 @@ const Detail = (props) => {
   //   const { diagDate, diagnosis } = values;
   //   try {
   //     let data = {
-  //       id: pid,
+  //       id: patient_id,
   //       reserveId: id,
   //       diagDate: reserveTime,
   //       diagnosis: diagnosis,
   //     };
-  //     // let res = await postDiagnosis({ pId: patientData.id, rId: patientData.reserveId });//同时改变state
+  //     // let res = await postDiagnosis({ patient_id: patientData.id, rId: patientData.reserveId });//同时改变state
   //   } catch (error) {
   //     console.log('error', error);
   //   }
@@ -178,7 +178,7 @@ const Detail = (props) => {
           浙江大学医学院附属第二医院门诊病历
           {/* <p className="example-description">{item.description}</p> */}
         </h1>
-        <Basic/>
+        <UpdateRecord/>
       </Card>
     </GridContent>
   );
@@ -244,7 +244,7 @@ const Detail = (props) => {
         title={'患者：' + patient_name}
         extra={action}
         className={styles.pageHeader}
-        content={getDescription({ ...patientData, reserveTime: reserveTime, expireTime})}
+        content={getDescription({ ...patientData, reserveTime, expireTime})}
         extraContent={extra(statusInfos[status].text)}
         tabActiveKey={tabStatus.tabActiveKey}
         onTabChange={onTabChange}

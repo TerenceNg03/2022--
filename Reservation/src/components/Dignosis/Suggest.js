@@ -5,7 +5,7 @@ import useHash from '../useHash'
 import { useState } from "react";
 import {Form, Input, Button, Space, Select, notification} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { medicines } from "./Basic";
+import { medicines } from "./UpdateRecord";
 // import SearchInput from "./Search";
 const { Option } = Select;
 
@@ -14,11 +14,30 @@ const { Option } = Select;
 // }
 
 const Suggest = () => {
-
+// export default class Suggest extends Component {
+    // const [medicine, setMedicine] = useState("");
+    // const [unit, setUnit] = useState("");
+    // const [Usage, setUsage] = useState("");
+    // formRef = React.createRef()
+    // const [val, setVal] = useState(0);
     const handleMedicineChange = (value) => {
         for(let i=0; i<medicines.length; i++){
             if(medicines[i]["medName"] === value) {
                 console.log(`medName: ${value}, unit: ${medicines[i]["unit"]}, Usage: ${medicines[i]["Usage"]}`)
+                // console.log('in suggests: ', props.form.getFieldsValue())
+                // console.log(`name: ${name}`);
+                // setMedicine(value);
+                // setUnit(medicines[i]["unit"]);
+                // setUsage(medicines[i]["Usage"]);
+                // setVal(medicines[i]["val"]);
+                // console.log(`medName: ${value}, unit: ${unit}, Usage: ${Usage}`)
+                // this.formRef.current.setFieldsValue({
+                //     searchItem: {
+                //         medName: medicines[i]["medName"],
+                //         unit: medicines[i]["unit"],
+                //         Usage: medicines[i]["Usage"]
+                //     }
+                // })
                 const key = `open${Date.now()}`;
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>
@@ -28,7 +47,7 @@ const Suggest = () => {
                 notification.open({
                     message: `药品：${value} 信息完成核对`,
                     description:
-                        `单位：${medicines[i]["unit"]}\n建议用法：${medicines[i]["Usage"]}\n药品剩余：${medicines[i]["maxval"]}`,
+                        `单位：${medicines[i]["unit"]} || 建议用法：${medicines[i]["Usage"]} || 药品剩余：${medicines[i]["maxval"]}`,
                     btn,
                     key,
                 });
@@ -40,21 +59,6 @@ const Suggest = () => {
         console.log('Received values of form:', values);
     };
 
-    // const current = useHash() || 'basic'
-    //
-    // const renderExample = () => {
-    //     const item = medItem[current]
-    //     if (!item || !item.component) {
-    //         return <span style={{ color: 'red' }}>Error: example "{current}" not found.</span>
-    //     }
-    //     const Comp = item.component
-    //     return (
-    //         <Comp/>
-    //     )
-    // }
-
-    // render() {
-        // const {getFieldDecorator} = this.props.form;
     return (
         <Form.List name="trs">
             {(fields, {add, remove}) => (
@@ -86,20 +90,21 @@ const Suggest = () => {
                             <Form.Item
                                 {...restField}
                                 name={[name,"val"]}
-                                rules={[{ required: true, message: "请输入剂量" }]}
+                                rules={[{ required: true, message: "请输入剂量" },]}
                             >
                                 <Input placeholder="剂量" />
                             </Form.Item>
                             <Form.Item
                                 {...restField}
                                 name={[name,"unit"]}
-                                rules={[{ required: true, message: "请输入单位" },]}
+                                rules={[{ required: true, message: "请输入剂量单位" },]}
                             >
                                 <Input placeholder="单位"/>
                             </Form.Item>
                             <Form.Item
                                 {...restField}
                                 name={[name, "Usage"]}
+                                rules={[{ required: true, message: "请输入药品用法" },]}
                             >
                                 <Input placeholder="用法"/>
 

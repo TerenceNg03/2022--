@@ -1,48 +1,39 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import './index.less';
-import { Drawer, List, Avatar, Divider, Col, Row } from 'antd';
-import ViewScript from '@/components/Dignosis/ViewScript';
+import { Drawer, List, Avatar } from 'antd';
+import ViewRecord from '@/components/Dignosis/ViewRecord';
 
-const DescriptionItem = ({ title, content }) => (
-  <div className="site-description-item-profile-wrapper">
-    <p className="site-description-item-profile-p-label">{title}:</p>
-    {content}
-  </div>
-);
-
-const Records = () => {
+const Records = (props) => {
   const [visible, setVisible] = useState(false);
+  const [recordID, setRecordID] = useState(0);
+
+  const { data } = props;
 
   const showDrawer = () => {
     setVisible(true);
   };
 
-  const onClose = () => {
+  const hideDrawer = () => {
     setVisible(false);
   };
 
   return (
     <>
       <List
-        dataSource={[
-          {
-            id: 1,
-            Doctor_name: '张小丽',
-            description: '腹胀腹泻腹痛伴呕吐1天',
-          },
-          {
-            id: 2,
-            Doctor_name: '胡英俊',
-            description: '腹胀腹泻腹痛伴呕吐1天',
-          },
-        ]}
+        dataSource={data}
         bordered
         renderItem={(item) => (
           <List.Item
-            key={item.id}
+            key={item.recordID}
             actions={[
-              <a onClick={showDrawer} key={`a-${item.id}`}>
+              <a
+                onClick={() => {
+                  setRecordID(item.recordID);
+                  showDrawer();
+                }}
+                key={`a-${item.recordID}`}
+              >
                 查看详情
               </a>,
             ]}
@@ -52,7 +43,7 @@ const Records = () => {
                 <Avatar src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" />
               }
               title={
-                <a href="https://ant.design/index-cn">{item.Doctor_name}</a>
+                <a href="https://ant.design/index-cn">{item.doctorName}</a>
               }
               description={item.description}
             />
@@ -63,10 +54,10 @@ const Records = () => {
         width={640}
         placement="right"
         closable={false}
-        onClose={onClose}
+        onClose={hideDrawer}
         visible={visible}
       >
-        <ViewScript />
+        <ViewRecord recordID={recordID} />
       </Drawer>
     </>
   );

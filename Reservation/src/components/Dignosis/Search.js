@@ -4,7 +4,7 @@ import React, {Component, Fragment, useState} from 'react';
 import {Form, Input, Space, Select, Row, Col} from 'antd';
 // import jsonp from 'fetch-jsonp';
 // import qs from 'qs';
-import { medicines } from "./Basic";
+import { medicines } from "./UpdateRecord";
 const { Option } = Select;
 // let timeout;
 // let currentValue;

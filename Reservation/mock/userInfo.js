@@ -25,16 +25,14 @@ const reservations = [
 
 const records = [
   {
-    title: '马应龙痔疮膏',
+    recordID: 1,
+    doctorName: '张小丽',
+    description: '腹胀腹泻腹痛伴呕吐1天',
   },
   {
-    title: '盐酸伪麻黄碱片',
-  },
-  {
-    title: '致康胶囊',
-  },
-  {
-    title: '泰诺',
+    recordID: 3,
+    doctorName: '胡英俊',
+    description: '腹胀腹泻腹痛伴呕吐1天',
   },
 ];
 

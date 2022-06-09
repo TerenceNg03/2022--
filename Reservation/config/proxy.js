@@ -22,6 +22,13 @@ export default {
         '^/api/management': '/api',
       },
     },
+    '/api/record': {
+      target: 'http://124.220.171.17:1376',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api/record': '/api',
+      },
+    },
     '/api/pharmacy': {
       target: 'http://124.220.171.17:6666',
       changeOrigin: true,
