@@ -4,7 +4,7 @@ import { Avatar, Card, Col, Divider, Input, Row, Tag, message } from 'antd';
 import { useRef, useState } from 'react';
 import { Link, useRequest, useModel } from 'umi';
 import moment from 'moment';
-import styles from './Center.less';
+import styles from './style.less';
 import Reservations from './components/Reservations';
 import Records from './components/Records';
 import Bills from './components/Bills';
@@ -13,77 +13,6 @@ import { queryReservations, changeStatus } from '@/services/reservation';
 import { querySchedule } from '@/services/management';
 import { queryRecords } from '@/services/record';
 import { queryBills } from '@/services/pharmacy';
-
-// const TagList = ({ tags }) => {
-//   const ref = useRef(null);
-//   const [newTags, setNewTags] = useState([]);
-//   const [inputVisible, setInputVisible] = useState(false);
-//   const [inputValue, setInputValue] = useState('');
-
-//   const showInput = () => {
-//     setInputVisible(true);
-
-//     if (ref.current) {
-//       // eslint-disable-next-line no-unused-expressions
-//       ref.current?.focus();
-//     }
-//   };
-
-//   const handleInputChange = (e) => {
-//     setInputValue(e.target.value);
-//   };
-
-//   const handleInputConfirm = () => {
-//     let tempsTags = [...newTags];
-
-//     if (inputValue && tempsTags.filter((tag) => tag.label === inputValue).length === 0) {
-//       tempsTags = [
-//         ...tempsTags,
-//         {
-//           key: `new-${tempsTags.length}`,
-//           label: inputValue,
-//         },
-//       ];
-//     }
-
-//     setNewTags(tempsTags);
-//     setInputVisible(false);
-//     setInputValue('');
-//   };
-
-//   return (
-//     <div className={styles.tags}>
-//       <div className={styles.tagsTitle}>标签</div>
-//       {(tags || []).concat(newTags).map((item) => (
-//         <Tag key={item.key}>{item.label}</Tag>
-//       ))}
-//       {inputVisible && (
-//         <Input
-//           ref={ref}
-//           type="text"
-//           size="small"
-//           style={{
-//             width: 78,
-//           }}
-//           value={inputValue}
-//           onChange={handleInputChange}
-//           onBlur={handleInputConfirm}
-//           onPressEnter={handleInputConfirm}
-//         />
-//       )}
-//       {!inputVisible && (
-//         <Tag
-//           onClick={showInput}
-//           style={{
-//             borderStyle: 'dashed',
-//           }}
-//         >
-//           <PlusOutlined />
-//         </Tag>
-//       )}
-//     </div>
-//   );
-// };
 
 const Center = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -213,7 +142,7 @@ const Center = () => {
     }
 
     if (tabValue === 'reservations') { //预约记录
-      return <Reservations data={userData.reservations} onCancel={cancel}/>;
+      return <Reservations data={userData.reservations} user={currentUser} onCancel={cancel}/>;
     }
 
     if (tabValue === 'records') { //过往病历

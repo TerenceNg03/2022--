@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
-import './index.less';
+
 import { Drawer, List, Avatar } from 'antd';
 import ViewRecord from '@/components/Dignosis/ViewRecord';
 
@@ -23,6 +23,7 @@ const Records = (props) => {
     <>
       <List
         dataSource={data}
+        style={{width:'100%'}}
         bordered
         renderItem={(item) => (
           <List.Item

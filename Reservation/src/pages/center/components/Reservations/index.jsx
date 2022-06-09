@@ -1,9 +1,18 @@
-import { Space, Table, Typography, Badge } from 'antd';
+import { Space, Table, Typography, Badge, Modal } from 'antd';
+import { useState } from 'react';
+import ViewRecord from '@/components/Dignosis/ViewRecord';
 import moment from 'moment';
 
 const Reservations = (props) => {
+  const [visible, setVisible] = useState(false);
+  const [recordID, setRecordID] = useState(0);
+  const [doctorName, setDoctorName] = useState('');
 
-  const { data, onCancel } = props;
+  const { data, user, onCancel } = props;
+
+  const handleCancel= () => {
+    setVisible(false);
+  }
 
   const statusInfo = {
     booked: {
@@ -73,7 +82,16 @@ const Reservations = (props) => {
       key: 'detail',
       render: (_, record) => (
         <Space size={16}>
-          <a>详情</a>
+          <Typography.Link
+            onClick={(e) => {
+              e.preventDefault();
+              setRecordID(record.record_id);
+              setDoctorName(record.doctor_name);
+              setVisible(true);
+            }}
+          >
+            详情
+          </Typography.Link>
           <Typography.Link
             disabled={record.status != 'booked'}
             onClick={(e) => {
@@ -88,11 +106,31 @@ const Reservations = (props) => {
     },
   ];
 
-  return <Table
-    columns={columns}
-    dataSource={data}
-    rowKey="app_id"
-  />;
+  return <>
+    <Table
+      columns={columns}
+      dataSource={data}
+      rowKey="app_id"
+    />
+    <Modal
+      title='详情'
+      visible={visible}
+      footer={null}
+      onCancel={handleCancel}
+    >
+      {
+        recordID
+        ?
+        <ViewRecord
+          recordID={recordID}
+          doctorData={{ doctorName }}
+          patientData={{ name: user.name }}
+        />
+        :
+        '暂无接诊结果'
+      }
+    </Modal>
+  </>;
 }
 
 export default Reservations;

@@ -13,10 +13,11 @@ import { useState } from 'react';
 import { useRequest } from 'umi';
 import classNames from 'classnames';
 import moment from 'moment';
+import Records from '../center/components/Records';
+import UpdateRecord from '../../components/Dignosis/UpdateRecord';
 import { queryPatientInfo } from '@/services/management';
 import { changeStatus } from '@/services/reservation';
-import { writeDiagnosis } from '@/services/record';
-import UpdateRecord from '../../components/Dignosis/UpdateRecord';
+import { queryRecords, writeDiagnosis } from '@/services/record';
 import styles from './style.less';
 
 const { Step } = Steps;
@@ -72,6 +73,14 @@ const Detail = (props) => {
       return queryPatientInfo({
         id: patient_id,
       });
+    }
+  );
+
+  const { data: records } = useRequest(() => {
+      return queryRecords({ patient_id });
+    },
+    {
+      formatResult: res => res.data.data,
     }
   );
   
@@ -175,7 +184,7 @@ const Detail = (props) => {
     <GridContent> 
       <Card>
         <h1>
-          浙江大学医学院附属第二医院门诊病历
+          病历单
           {/* <p className="example-description">{item.description}</p> */}
         </h1>
         <UpdateRecord/>
@@ -183,7 +192,7 @@ const Detail = (props) => {
     </GridContent>
   );
 
-  const diagProcess = (
+  const diagDetail = (
     <GridContent>
       <Card
         title="流程进度"
@@ -222,12 +231,11 @@ const Detail = (props) => {
         }}
         bordered={false}
       >
-        <Descriptions
-          style={{
-            marginBottom: 40,
-          }}
-        >
-          <Descriptions.Item label="患者预约自述">{description}</Descriptions.Item>
+        <Descriptions column={1}>
+          <Descriptions.Item label="患者自述">{description}</Descriptions.Item>
+          <Descriptions.Item label="过往病历">
+            <Records data={records} user={{name: patient_name}}/>
+          </Descriptions.Item>
         </Descriptions>
       </Card>
     </GridContent>
@@ -235,7 +243,7 @@ const Detail = (props) => {
 
   const content = {
     diagnosis: diagMake,
-    detail: diagProcess,
+    detail: diagDetail,
   };
 
   return (
