@@ -44,7 +44,7 @@ export default class ViewRecord extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            recordID: 4,
+            recordID: 3,
             loaded: false
         }
     }
@@ -58,7 +58,7 @@ export default class ViewRecord extends Component {
 
     // getDataFromBackend() {
     componentDidMount() {
-        fetch(`http://0.0.0.0:8080/api/view/${this.state.recordID}`,{
+        fetch(`http://124.220.171.17:1376/api/view/${this.state.recordID}`,{
             method:"GET"
         }).then(res=>res.json()).then(data=>{
             // console.log("from record database[get]: ", data);

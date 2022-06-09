@@ -34,6 +34,8 @@ export default class UpdateRecord extends Component {
         super(props);
         this.state = {
             recordID: 0,
+            userID: 9527,
+            doctorID: 2022,
             loading: true,
             commit: true
         }
@@ -44,10 +46,10 @@ export default class UpdateRecord extends Component {
 
     componentDidMount() {
         let formData = new FormData();
-        formData.append('userID', personalInfoSample.userID);
-        formData.append('doctorID', personalInfoSample.doctorID);
+        formData.append('userID', this.state.userID);
+        formData.append('doctorID', this.state.doctorID);
         console.log('send data to record backend[newcase]: ', formData.get('userID')," ", formData.get('doctorID'));
-        fetch(`http://0.0.0.0:8080/api/newcase`,{
+        fetch(`http://124.220.171.17:1376/api/newcase`,{
             method:"POST",
             body: formData
         }).then(res=>res.json()).then(data=>{
@@ -166,7 +168,7 @@ export default class UpdateRecord extends Component {
         }
         console.log("after change: ", JSON.stringify(newData))
         if(!this.state.commit) {
-            fetch(`http://0.0.0.0:8080/api/commit?id=${this.state.recordID}`, {
+            fetch(`http://124.220.171.17:1376/api/commit?id=${this.state.recordID}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

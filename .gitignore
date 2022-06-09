@@ -1,4 +1,5 @@
 *.idea/
 *node_modules/
 Interface.py
-config/
+*config/
+record/Interface.py
