@@ -7,8 +7,9 @@ import ViewRecord from '@/components/Dignosis/ViewRecord';
 const Records = (props) => {
   const [visible, setVisible] = useState(false);
   const [recordID, setRecordID] = useState(0);
+  const [doctorName, setDoctorName] = useState('');
 
-  const { data } = props;
+  const { data, user } = props;
 
   const showDrawer = () => {
     setVisible(true);
@@ -30,6 +31,7 @@ const Records = (props) => {
               <a
                 onClick={() => {
                   setRecordID(item.recordID);
+                  setDoctorName(item.doctorName);
                   showDrawer();
                 }}
                 key={`a-${item.recordID}`}
@@ -45,7 +47,7 @@ const Records = (props) => {
               title={
                 <a href="https://ant.design/index-cn">{item.doctorName}</a>
               }
-              description={item.description}
+              description={item.discription}
             />
           </List.Item>
         )}
@@ -57,7 +59,11 @@ const Records = (props) => {
         onClose={hideDrawer}
         visible={visible}
       >
-        <ViewRecord recordID={recordID} />
+        <ViewRecord
+          recordID={recordID}
+          doctorData={{ doctorName }}
+          patientData={{ name: user.name }}
+        />
       </Drawer>
     </>
   );

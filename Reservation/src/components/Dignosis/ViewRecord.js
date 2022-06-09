@@ -5,16 +5,14 @@ import moment from "moment";
 import ViewCheckAST from "./ViewCheckAST.js"
 import ViewSuggest from "./ViewSuggest";
 
-const TimeView = ({ value }) => value.format('yyyy-MM-DD HH:mm:ss');
-const DateView = ({ value }) => value.format('yyyy-MM-DD');
+const TimeView = ({ value }) => moment(value).format('yyyy-MM-DD HH:mm:ss');
+const DateView = ({ value }) => moment(value).format('yyyy-MM-DD');
 
 const personalInfoSample = {
-    id: '2007473',
     name: '赵王',
     gender: '男',
     age: '27',
     //department: '发热门诊科',
-    time: moment('2022-01-01 15:43:56'),
 }
 
 const ScriptSample = {
@@ -35,27 +33,34 @@ const ScriptSample = {
 
 const doctorInfoSample = {
     name: '孙李',
-    time: moment('2022-01-01'),
+    time: '2022-01-01',
 }
 
 export default class ViewRecord extends Component {
     constructor(props) {
         super(props);
+        this.patientData = {
+            ...props.patientData,
+            gender: '男',
+            age: '27',
+        };
         this.state = {
             recordData: {},
         }
     }
 
-    // componentWillMount() {
-    //     this.getRecordDetail(this.props.recordID);
-    // }
+    componentWillMount() {
+        this.getRecordDetail(this.props.recordID);
+    }
 
-    // componentWillReceiveProps(nextProps) {
-    //     if(this.props.recordID != nextProps.recordID) this.getRecordDetail(nextProps.recordID);
-    // }
+    componentWillReceiveProps(nextProps) {
+        if(this.props.recordID == nextProps.recordID) return;
+
+        this.getRecordDetail(nextProps.recordID);
+    }
 
     getRecordDetail(id) {
-        fetch(`/api/record/view/${id}`, {
+        fetch(`/api/record/record/view/${id}`, {
             method: "GET",
         }).then(res => res.json()).then(res=>{
             const data = res.data;
@@ -72,16 +77,16 @@ export default class ViewRecord extends Component {
                     edu: data.cas.edu,
                     sps: data.sps,
                     trs: data.trs,
-                }
+                    time: data.reg.regTime,
+                },
             });
 
-            console.log("from record database[get]: ", this.state.recordData);
-            //console.log("sample: ", ScriptSample);
+            console.log("from record database [get]: ", this.state.recordData);
         });
     }
 
     checkData() {
-        console.log("check record[get]: ", this.state.recordData);
+        console.log("check record [get]: ", this.state.recordData);
     }
 
     infoMeta = {
@@ -107,11 +112,6 @@ export default class ViewRecord extends Component {
             //     key: 'department',
             //     label: '就诊科室',
             // },
-            {
-                key: 'time',
-                label: '就诊时间',
-                viewWidget: TimeView,
-            },
         ],
     };
 
@@ -180,22 +180,24 @@ export default class ViewRecord extends Component {
                 key: 'time',
                 label: '时间',
                 labelCol: {style: {width: '50%'}},
-                viewWidget: DateView,
+                viewWidget: TimeView,
             },
         ],
     };
 
     render() {
         // this.checkData();
-        this.getRecordDetail(this.props.recordID);
+        const patientData = { id: this.props.recordID, ...(this.patientData) };
+        const recordData = this.state.recordData;
+        const signature = { name: this.props.doctorData.doctorName, time: this.state.recordData.time };
         return (
             <Form layout="horizontal">
-                {<FormBuilder meta={this.infoMeta} initialValues={personalInfoSample} viewMode/>}
+                {<FormBuilder meta={this.infoMeta} initialValues={patientData} viewMode/>}
                 <hr/>
-                <FormBuilder meta={this.formMeta} initialValues={this.state.recordData} viewMode/>
+                <FormBuilder meta={this.formMeta} initialValues={recordData} viewMode/>
                 <hr/>
-                {<FormBuilder meta={this.doctorMeta} initialValues={doctorInfoSample} viewMode />}
+                {<FormBuilder meta={this.doctorMeta} initialValues={signature} viewMode />}
             </Form>
-        )
+        );
     }
 }

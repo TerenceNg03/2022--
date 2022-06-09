@@ -1,9 +1,9 @@
 import { request } from 'umi';
 
 export async function queryRecords(params) {
-  return request('/api/record/get_records', {
+  const { patient_id } = params;
+  return request(`/api/record/record/${patient_id}`, {
     method: 'GET',
-    params: params,
   });
 }
 

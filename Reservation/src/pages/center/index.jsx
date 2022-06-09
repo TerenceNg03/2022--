@@ -102,7 +102,7 @@ const Center = () => {
 
           setUserData({
             reservations: (await queryReservations({ patient_id })).data,
-            records: (await queryRecords({ patient_id })).data,
+            records: (await queryRecords({ patient_id })).data.data,
             bills: (await queryBills({ patient_id })).BillList,
           });
         }
@@ -217,7 +217,7 @@ const Center = () => {
     }
 
     if (tabValue === 'records') { //过往病历
-      return <Records data={userData.records}/>;
+      return <Records data={userData.records} user={currentUser}/>;
     }
 
     if (tabValue === 'bills') { //账单
