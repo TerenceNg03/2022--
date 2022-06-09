@@ -90,7 +90,6 @@ export const TableList = () => {
             labelWidth: 80,
           }}
           request={ async (params, sorter, filter) => {
-            console.log(currentUser);
             const data = { doctor_id : currentUser.id, ...params };
             const res = await queryReserveList(data);
             const nameFilter = item => data.patient_id ? `${item.patient_id}`.includes(`${data.patient_id}`) : true;

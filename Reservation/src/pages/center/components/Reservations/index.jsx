@@ -52,16 +52,16 @@ const Reservations = (props) => {
         </span>
       ),
     },
-    {
-      title: '医院',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: '科室',
-      dataIndex: 'department',
-      key: 'department',
-    },
+    // {
+    //   title: '医院',
+    //   dataIndex: 'address',
+    //   key: 'address',
+    // },
+    // {
+    //   title: '科室',
+    //   dataIndex: 'department',
+    //   key: 'department',
+    // },
     {
       title: '医生',
       dataIndex: 'doctor_name',

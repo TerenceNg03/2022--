@@ -19,51 +19,66 @@ const Center = () => {
 
   const currentUser = initialState.currentUser;
 
-  const [userData, setUserData] = useState({});
-  const [tabKey, setTabKey] = useState(currentUser.access === 'PATIENT' ? 'reservations' : 'schedule');
+  const isPatient = currentUser.access === 'PATIENT';
+  const isDoctor = currentUser.access === 'DOCTOR';
 
-  const { refresh } = useRequest(() => {return Promise.resolve('')},
-    {
-      pollingInterval: 1000 * 1000,
-      onSuccess: async () => {
-        if(currentUser.access === 'PATIENT') {
-          const patient_id = currentUser.id;
+  const [tabKey, setTabKey] = useState(isPatient ? 'reservations' : 'schedule');
 
-          setUserData({
-            reservations: (await queryReservations({ patient_id })).data,
-            records: (await queryRecords({ patient_id })).data.data,
-            bills: (await queryBills({ patient_id })).BillList,
-          });
-        }
-      }
-    }
-  );
-
-  if(currentUser.access === 'DOCTOR') {
+  const { data: reservations, refresh } = isPatient ?
     useRequest(() => {
-      return querySchedule({
-        doctor_id: currentUser.id,
-      });
-    },
-    {
-      formatResult: (res) => {
-        const arranges = res?.data?.arranges || [];
-        return arranges.map((item) => {
-          var arrs = [];
-          for(var i = 0; i < item.length; i+=2) {
-            arrs.push({
-              start: item[i],
-              end: item[i+1],
-            });
-          }
-          return arrs;
+        return queryReservations({
+          patient_id: currentUser.id,
         });
       },
-      onSuccess: (result) => {
-        setUserData({ arrangements: result });
+      {
+        pollingInterval: 1000 * 1000,
       }
-    })
-  }
+    ) : {};
+
+  const { data: records } = isPatient ? 
+    useRequest(() => {
+        return queryRecords({
+          patient_id: currentUser.id,
+        });
+      },
+      {
+        formatResult: res => res.data.data,
+      }
+    ) : {};
+
+  const { data: bills } = isPatient ? 
+    useRequest(() => {
+        return queryBills({
+          patient_id: currentUser.id,
+        });
+      },
+      {
+        formatResult: res => res.BillList,
+      }
+    ) : {};
+
+  const { data: arrangements } = isDoctor ?
+    useRequest(() => {
+        return querySchedule({
+          doctor_id: currentUser.id,
+        });
+      },
+      {
+        formatResult: (res) => {
+          const arranges = res?.data?.arranges || [];
+          return arranges.map((item) => {
+            var arrs = [];
+            for(var i = 0; i < item.length; i+=2) {
+              arrs.push({
+                start: item[i],
+                end: item[i+1],
+              });
+            }
+            return arrs;
+          });
+        },
+      }
+    ) : {};
 
   const { run: cancel } = useRequest(
     (id) => {
@@ -142,19 +157,19 @@ const Center = () => {
     }
 
     if (tabValue === 'reservations') { //预约记录
-      return <Reservations data={userData.reservations} user={currentUser} onCancel={cancel}/>;
+      return <Reservations data={reservations} user={currentUser} onCancel={cancel}/>;
     }
 
     if (tabValue === 'records') { //过往病历
-      return <Records data={userData.records} user={currentUser}/>;
+      return <Records data={records} user={currentUser}/>;
     }
 
     if (tabValue === 'bills') { //账单
-      return <Bills data={userData.bills}/>;
+      return <Bills data={bills}/>;
     }
 
     if (tabValue === 'schedule') { //账单
-      return <Schedule data={userData.arrangements}/>;
+      return <Schedule data={arrangements}/>;
     }
 
     return null;

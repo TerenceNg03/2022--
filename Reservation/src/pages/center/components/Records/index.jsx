@@ -21,38 +21,40 @@ const Records = (props) => {
 
   return (
     <>
-      <List
-        dataSource={data}
-        style={{width:'100%'}}
-        bordered
-        renderItem={(item) => (
-          <List.Item
-            key={item.recordID}
-            actions={[
-              <a
-                onClick={() => {
-                  setRecordID(item.recordID);
-                  setDoctorName(item.doctorName);
-                  showDrawer();
-                }}
-                key={`a-${item.recordID}`}
-              >
-                查看详情
-              </a>,
-            ]}
-          >
-            <List.Item.Meta
-              avatar={
-                <Avatar src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" />
-              }
-              title={
-                <a href="https://ant.design/index-cn">{item.doctorName}</a>
-              }
-              description={item.discription}
-            />
-          </List.Item>
-        )}
-      />
+      { data?.length > 0 &&
+        <List
+          dataSource={data}
+          style={{width:'100%'}}
+          bordered
+          renderItem={(item) => (
+            <List.Item
+              key={item.recordID}
+              actions={[
+                <a
+                  onClick={() => {
+                    setRecordID(item.recordID);
+                    setDoctorName(item.doctorName);
+                    showDrawer();
+                  }}
+                  key={`a-${item.recordID}`}
+                >
+                  查看详情
+                </a>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={
+                  <Avatar src="https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png" />
+                }
+                title={
+                  <a href="https://ant.design/index-cn">{item.doctorName}</a>
+                }
+                description={item.discription}
+              />
+            </List.Item>
+          )}
+        />
+      }
       <Drawer
         width={640}
         placement="right"
