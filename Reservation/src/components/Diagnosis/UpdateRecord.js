@@ -43,25 +43,25 @@ export default class UpdateRecord extends Component {
     }
 
     newCase(formData) {
-        fetch(`http://124.220.171.17:1376/api/record/newcase`,{
+        fetch(`/api/record/record/newcase`,{
             method:"POST",
             body: formData
         }).then(res=>res.json()).then(data=>{
             console.log('return data from record backend[newcase]: ', data)
             if (data["code"]===200){
                 this.setState({recordID: data["data"]["id"]})
-                const key = `open${Date.now()}`;
-                const btn = (
-                    <Button type="primary" size="small" onClick={() => notification.close(key)}>
-                        确认
-                    </Button>
-                );
-                notification.open({
-                    message: `新建病历成功！`,
-                    description: `病历号：${this.state.recordID}`,
-                    btn,
-                    key,
-                });
+                // const key = `open${Date.now()}`;
+                // const btn = (
+                //     <Button type="primary" size="small" onClick={() => notification.close(key)}>
+                //         确认
+                //     </Button>
+                // );
+                // notification.open({
+                //     message: `新建病历成功！`,
+                //     description: `病历号：${this.state.recordID}`,
+                //     btn,
+                //     key,
+                // });
             }else{
                 const key = `open${Date.now()}`;
                 const btn = (
@@ -169,7 +169,7 @@ export default class UpdateRecord extends Component {
             // commit to pharmacy backend
             let toPha_code = 0;
             console.log(newMedBill);
-            fetch(`http://124.220.171.17:6666/doctor_interface/prescmedicine/`,{
+            fetch(`/api/pharmacy/prescmedicine/`,{
                 method:"POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -181,17 +181,17 @@ export default class UpdateRecord extends Component {
                 if (toPha_code!==200){
                     throw new Error(`HTTP error ${res.status}`)
                 } else {
-                    const key = `open${Date.now()}`;
-                    const btn = (
-                        <Button type="primary" size="small" onClick={() => notification.close(key)}>
-                            确认
-                        </Button>
-                    );
-                    notification.open({
-                        message: `后台药房账单更新成功！`,
-                        btn,
-                        key,
-                    });
+                    // const key = `open${Date.now()}`;
+                    // const btn = (
+                    //     <Button type="primary" size="small" onClick={() => notification.close(key)}>
+                    //         确认
+                    //     </Button>
+                    // );
+                    // notification.open({
+                    //     message: `后台药房账单更新成功！`,
+                    //     btn,
+                    //     key,
+                    // });
                 }
                 return res.json();
             }).then(data=>{
@@ -214,7 +214,7 @@ export default class UpdateRecord extends Component {
             })
 
             // commit to record backend
-            fetch(`http://124.220.171.17:1376/api/record/commit?id=${this.state.recordID}`, {
+            fetch(`/api/record/record/commit?id=${this.state.recordID}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -223,19 +223,18 @@ export default class UpdateRecord extends Component {
             }).then(res => res.json()).then(data => {
                 console.log(data);
                 if (data["code"] === 200) {
-                    // recordID = data["data"]["id"];
-                    const key = `open${Date.now()}`;
-                    const btn = (
-                        <Button type="primary" size="small" onClick={() => notification.close(key)}>
-                            确认
-                        </Button>
-                    );
-                    notification.open({
-                        message: data['msg'],
-                        description: `病历号：${this.state.recordID}`,
-                        btn,
-                        key,
-                    });
+                    // const key = `open${Date.now()}`;
+                    // const btn = (
+                    //     <Button type="primary" size="small" onClick={() => notification.close(key)}>
+                    //         确认
+                    //     </Button>
+                    // );
+                    // notification.open({
+                    //     message: data['msg'],
+                    //     description: `病历号：${this.state.recordID}`,
+                    //     btn,
+                    //     key,
+                    // });
                 } else {
                     const key = `open${Date.now()}`;
                     const btn = (
