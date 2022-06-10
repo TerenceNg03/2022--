@@ -15,6 +15,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import Records from '../center/components/Records';
 import UpdateRecord from '../../components/Diagnosis/UpdateRecord';
+import ViewRecord from '../../components/Diagnosis/ViewRecord';
 import { queryPatientInfo } from '@/services/management';
 import { changeStatus } from '@/services/reservation';
 import { queryRecords, writeDiagnosis } from '@/services/record';
@@ -32,7 +33,7 @@ const extra = (value) => (
 const getDescription = (patientData) => (
   <Descriptions className={styles.headerList} size="small" column={2}>
     <Descriptions.Item label="性别">{patientData.sex}</Descriptions.Item>
-    <Descriptions.Item label="身份证号">{patientData.IDCardNumber}</Descriptions.Item>
+    <Descriptions.Item label="身份证号">{patientData.age}</Descriptions.Item>
     <Descriptions.Item label="手机号">{patientData.diagNumber}</Descriptions.Item>
     <Descriptions.Item label="预约日期">
       {moment(patientData.reserveTime).format('YYYY-MM-DD')}
@@ -55,6 +56,7 @@ const Detail = (props) => {
   });
   const [status, setStatus] = useState(props.location.state?.record.status);
   const [endTime, setEndTime] = useState(props.location.state?.record.end_time);
+  const [recordID, setRecordID] = useState(props.location.state?.record.record_id);
 
   const {
     app_id: id,
@@ -109,21 +111,6 @@ const Detail = (props) => {
     }
   }
 
-  // const confirmDiagnosis = async (values) => {
-  //   const { diagDate, diagnosis } = values;
-  //   try {
-  //     let data = {
-  //       id: patient_id,
-  //       reserveId: id,
-  //       diagDate: reserveTime,
-  //       diagnosis: diagnosis,
-  //     };
-  //     // let res = await postDiagnosis({ patient_id: patientData.id, rId: patientData.reserveId });//同时改变state
-  //   } catch (error) {
-  //     console.log('error', error);
-  //   }
-  // };
-
   const action = (
     <RouteContext.Consumer>
       {() => {
@@ -148,51 +135,78 @@ const Detail = (props) => {
     </RouteContext.Consumer>
   );
 
-  const diagnose = (
-    <Button
-      type="primary"
-      onClick={async () => {
-        const { data } = await writeDiagnosis();
-        if(data.success) {
-          const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
-          const { data : result } = await changeStatus({
-            aid: id,
-            action:
-            {
-              status: 'done',
-              record_id: data.id,
-              end_time: currentTime,
-            }
-          });
-          if(result.success) {
-            setEndTime(currentTime);
-            setStatus('done');
-            message.success('病历提交成功');
-          } else {
-            message.error('提交病历失败');
-          }
-        } else {
-          message.error('病历未提交');
-        }
-      }}
-    >
-      填写病历
-    </Button>
-  );
+  const afterWrite = async (record_id) => {
+    const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+    const { data : result } = await changeStatus({
+      aid: id,
+      action:
+      {
+        status: 'done',
+        record_id: record_id,
+        end_time: currentTime,
+      }
+    });
+    if(result.success) {
+      setStatus('done');
+      setEndTime(currentTime);
+      setRecordID(record_id);
+      message.success('病历提交成功');
+    } else {
+      message.error('提交病历失败');
+    }
+  }
 
-  const diagMake = (
+  // const diagnose = (
+  //   <Button
+  //     type="primary"
+  //     onClick={async () => {
+  //       const { data } = await writeDiagnosis();
+  //       if(data.success) {
+  //         const currentTime = moment().format('YYYY-MM-DD HH:mm:ss');
+  //         const { data : result } = await changeStatus({
+  //           aid: id,
+  //           action:
+  //           {
+  //             status: 'done',
+  //             record_id: data.id,
+  //             end_time: currentTime,
+  //           }
+  //         });
+  //         if(result.success) {
+  //           setEndTime(currentTime);
+  //           setStatus('done');
+  //           message.success('病历提交成功');
+  //         } else {
+  //           message.error('提交病历失败');
+  //         }
+  //       } else {
+  //         message.error('病历未提交');
+  //       }
+  //     }}
+  //   >
+  //     填写病历
+  //   </Button>
+  // );
+
+  const diagnose = (
     <GridContent> 
       <Card>
-        <h1>
-          病历单
-          {/* <p className="example-description">{item.description}</p> */}
-        </h1>
-        <UpdateRecord/>
+        {
+          (status === 'started')
+          ?
+          <UpdateRecord
+            patientInfo={{id: patient_id, name: patient_name}}
+            doctorID={JSON.parse(localStorage.user).userId}
+            afterCommit={afterWrite}
+          />
+          :
+          <ViewRecord recordID={recordID}/>
+        }
       </Card>
     </GridContent>
   );
 
-  const diagDetail = (
+  const detail = (
     <GridContent>
       <Card
         title="流程进度"
@@ -216,7 +230,7 @@ const Detail = (props) => {
                 </>
                 :
                 <>
-                  <Step title="就诊中" description={status === 'started' ? diagnose : ''} />
+                  <Step title="就诊中" />
                   <Step title="就诊结束" description={status === 'done' ? processTime(endTime) : ''}/>
                 </>
               }
@@ -231,7 +245,7 @@ const Detail = (props) => {
         }}
         bordered={false}
       >
-        <Descriptions column={1}>
+        <Descriptions column={1} layout='vertical'>
           <Descriptions.Item label="患者自述">{description}</Descriptions.Item>
           <Descriptions.Item label="过往病历">
             <Records data={records}/>
@@ -242,8 +256,8 @@ const Detail = (props) => {
   );
 
   const content = {
-    diagnosis: diagMake,
-    detail: diagDetail,
+    detail: detail,
+    diagnosis: diagnose,
   };
 
   return (
@@ -263,7 +277,8 @@ const Detail = (props) => {
           },
           {
             key: 'diagnosis',
-            tab: '诊断单',
+            tab: '病历',
+            disabled: (status == 'booked' || status == 'cancelled'),
           },
         ]}
       >

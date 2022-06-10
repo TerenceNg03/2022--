@@ -12,6 +12,10 @@ const AvatarDropdown = ({ menu }) => {
     (event) => {
       const { key } = event;
 
+      if(key === 'center') {
+        history.push('/center');
+      }
+
       if (key === 'logout') {
         localStorage.removeItem('user');
         window.location.href = 'http://124.220.171.17:3000/logout';

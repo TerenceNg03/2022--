@@ -1,9 +1,9 @@
 const patient = {
   name: '张力',
   sex: '男',
+  age: 27,
   diagNumber: '123456',
   diagTime: '2021-12-25',
-  IDCardNumber: 330202199506240912,
   medicalRecords: [],
 };
 

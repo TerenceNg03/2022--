@@ -47,7 +47,7 @@ const Records = (props) => {
                 title={
                   <a href="https://ant.design/index-cn">{item.doctorName}</a>
                 }
-                description={item.discription}
+                description={item.description}
               />
             </List.Item>
           )}

@@ -1,14 +1,11 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import ProTable from '@ant-design/pro-table';
-import { Link, useModel } from 'umi';
+import { Link } from 'umi';
 import { useRef } from 'react';
 import { queryReserveList } from '@/services/reservation';
 
 export const TableList = () => {
   const actionRef = useRef();
-  const { initialState, setInitialState } = useModel('@@initialState');
-
-  const currentUser = initialState.currentUser;
 
   const columns = [
     {
@@ -90,7 +87,7 @@ export const TableList = () => {
             labelWidth: 80,
           }}
           request={ async (params, sorter, filter) => {
-            const data = { doctor_id : currentUser.id, ...params };
+            const data = { doctor_id : JSON.parse(localStorage.user).userId, ...params };
             const res = await queryReserveList(data);
             return Promise.resolve({
               data: res.data,

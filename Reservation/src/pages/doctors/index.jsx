@@ -1,7 +1,7 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import { Select, Avatar, Card, Input, List, message } from 'antd';
 import { useState } from 'react';
-import { useRequest, useModel } from 'umi';
+import { useRequest } from 'umi';
 import OperationModal from './components/OperationModal';
 import { queryHospitalList, queryDepartmentList, queryDoctorList } from '@/services/management';
 import { reserveDoctor } from '@/services/reservation';
@@ -17,9 +17,6 @@ const DoctorList = () => {
   const [doctors, setDoctors] = useState([]);
   const [hospital, setHospital] = useState();
   const [department, setDepartment] = useState();
-  const { initialState, setInitialState } = useModel('@@initialState');
-
-  const currentUser = initialState.currentUser;
 
   const { data: hospitals } = useRequest(queryHospitalList);
 
@@ -71,11 +68,7 @@ const DoctorList = () => {
   };
 
   const handleSubmit = (values) => {
-    if(!currentUser) {
-      message.error("网络不佳，请稍后再试。");
-      return;
-    }
-    reserve({ "patient_id" : currentUser.id , ...values});
+    reserve({ "patient_id" : JSON.parse(localStorage.user).userId , ...values});
   };
 
   const handleSearch = (value) => {
