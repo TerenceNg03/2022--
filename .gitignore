@@ -1,0 +1,5 @@
+*.idea/
+*node_modules/
+Interface.py
+*config/
+record/Interface.py
