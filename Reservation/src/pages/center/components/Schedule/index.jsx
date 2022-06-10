@@ -11,17 +11,17 @@ const Schedule = (props) => {
     {
       title: '星期',
       key: 'date',
-      render: (_, ranges, index) => (
+      render: (_, record) => (
         <span>
-          {weekday[index]}
+          {weekday[record.id]}
         </span>
       ),
     },
     {
       title: '排班',
       key: 'ranges',
-      render: (_, ranges) => {
-        return ranges.map((range, index) => {
+      render: (_, record) => {
+        return record.ranges.map((range, index) => {
           return (<span key={index}>
             {moment(range.start, 'HH:mm:ss').format('HH:mm')}~{moment(range.end, 'HH:mm:ss').format('HH:mm')}<br/>
           </span>);
@@ -33,7 +33,7 @@ const Schedule = (props) => {
   return <Table
     columns={columns}
     dataSource={data}
-    rowKey={(_, index) => index}
+    rowKey={record => record.id}
   />;
 }
 

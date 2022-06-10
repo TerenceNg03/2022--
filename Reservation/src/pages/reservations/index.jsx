@@ -92,9 +92,8 @@ export const TableList = () => {
           request={ async (params, sorter, filter) => {
             const data = { doctor_id : currentUser.id, ...params };
             const res = await queryReserveList(data);
-            const nameFilter = item => data.patient_id ? `${item.patient_id}`.includes(`${data.patient_id}`) : true;
             return Promise.resolve({
-              data: res.data.filter(nameFilter),
+              data: res.data,
               success: res.success,
             });
           }}

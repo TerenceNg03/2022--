@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 
 import { Drawer, List, Avatar } from 'antd';
-import ViewRecord from '@/components/Dignosis/ViewRecord';
+import ViewRecord from '@/components/Diagnosis/ViewRecord';
 
 const Records = (props) => {
   const [visible, setVisible] = useState(false);
   const [recordID, setRecordID] = useState(0);
-  const [doctorName, setDoctorName] = useState('');
 
-  const { data, user } = props;
+  const { data } = props;
 
   const showDrawer = () => {
     setVisible(true);
@@ -33,7 +32,6 @@ const Records = (props) => {
                 <a
                   onClick={() => {
                     setRecordID(item.recordID);
-                    setDoctorName(item.doctorName);
                     showDrawer();
                   }}
                   key={`a-${item.recordID}`}
@@ -62,11 +60,7 @@ const Records = (props) => {
         onClose={hideDrawer}
         visible={visible}
       >
-        <ViewRecord
-          recordID={recordID}
-          doctorData={{ doctorName }}
-          patientData={{ name: user.name }}
-        />
+        <ViewRecord recordID={recordID}/>
       </Drawer>
     </>
   );

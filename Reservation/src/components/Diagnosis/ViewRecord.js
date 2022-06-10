@@ -39,17 +39,13 @@ const doctorInfoSample = {
 export default class ViewRecord extends Component {
     constructor(props) {
         super(props);
-        this.patientData = {
-            ...props.patientData,
-            gender: '男',
-            age: '27',
-        };
         this.state = {
+            patientData: {},
             recordData: {},
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.getRecordDetail(this.props.recordID);
     }
 
@@ -64,9 +60,15 @@ export default class ViewRecord extends Component {
             method: "GET",
         }).then(res => res.json()).then(res=>{
             const data = res.data;
+            console.log("from record database [get]: ", data);
             if(!data) return;
 
             this.setState({
+                patientData: {
+                    name: data.reg.userName,
+                    gender: '男',
+                    age: '27',
+                },
                 recordData: {
                     cc: data.cas.cc,
                     hopi: data.cas.hopi,
@@ -78,10 +80,10 @@ export default class ViewRecord extends Component {
                     sps: data.sps,
                     trs: data.trs,
                     time: data.reg.regTime,
+                    doctorName: data.reg.doctorName,
                 },
             });
 
-            console.log("from record database [get]: ", this.state.recordData);
         });
     }
 
@@ -187,14 +189,14 @@ export default class ViewRecord extends Component {
 
     render() {
         // this.checkData();
-        const patientData = { id: this.props.recordID, ...(this.patientData) };
-        const recordData = this.state.recordData;
-        const signature = { name: this.props.doctorData.doctorName, time: this.state.recordData.time };
+        const information = { id: this.props.recordID, ...(this.state.patientData) };
+        const record = this.state.recordData;
+        const signature = { name: this.state.recordData.doctorName, time: this.state.recordData.time };
         return (
             <Form layout="horizontal">
-                {<FormBuilder meta={this.infoMeta} initialValues={patientData} viewMode/>}
+                {<FormBuilder meta={this.infoMeta} initialValues={information} viewMode/>}
                 <hr/>
-                <FormBuilder meta={this.formMeta} initialValues={recordData} viewMode/>
+                <FormBuilder meta={this.formMeta} initialValues={record} viewMode/>
                 <hr/>
                 {<FormBuilder meta={this.doctorMeta} initialValues={signature} viewMode />}
             </Form>

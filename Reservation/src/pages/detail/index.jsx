@@ -14,7 +14,7 @@ import { useRequest } from 'umi';
 import classNames from 'classnames';
 import moment from 'moment';
 import Records from '../center/components/Records';
-import UpdateRecord from '../../components/Dignosis/UpdateRecord';
+import UpdateRecord from '../../components/Diagnosis/UpdateRecord';
 import { queryPatientInfo } from '@/services/management';
 import { changeStatus } from '@/services/reservation';
 import { queryRecords, writeDiagnosis } from '@/services/record';
@@ -234,7 +234,7 @@ const Detail = (props) => {
         <Descriptions column={1}>
           <Descriptions.Item label="患者自述">{description}</Descriptions.Item>
           <Descriptions.Item label="过往病历">
-            <Records data={records} user={{name: patient_name}}/>
+            <Records data={records}/>
           </Descriptions.Item>
         </Descriptions>
       </Card>

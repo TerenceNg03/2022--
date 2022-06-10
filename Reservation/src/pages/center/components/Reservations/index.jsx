@@ -1,14 +1,13 @@
 import { Space, Table, Typography, Badge, Modal } from 'antd';
 import { useState } from 'react';
-import ViewRecord from '@/components/Dignosis/ViewRecord';
+import ViewRecord from '@/components/Diagnosis/ViewRecord';
 import moment from 'moment';
 
 const Reservations = (props) => {
   const [visible, setVisible] = useState(false);
   const [recordID, setRecordID] = useState(0);
-  const [doctorName, setDoctorName] = useState('');
 
-  const { data, user, onCancel } = props;
+  const { data, onCancel } = props;
 
   const handleCancel= () => {
     setVisible(false);
@@ -86,7 +85,6 @@ const Reservations = (props) => {
             onClick={(e) => {
               e.preventDefault();
               setRecordID(record.record_id);
-              setDoctorName(record.doctor_name);
               setVisible(true);
             }}
           >
@@ -121,11 +119,7 @@ const Reservations = (props) => {
       {
         recordID
         ?
-        <ViewRecord
-          recordID={recordID}
-          doctorData={{ doctorName }}
-          patientData={{ name: user.name }}
-        />
+        <ViewRecord recordID={recordID}/>
         :
         '暂无接诊结果'
       }

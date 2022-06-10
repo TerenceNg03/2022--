@@ -66,7 +66,7 @@ const Center = () => {
       {
         formatResult: (res) => {
           const arranges = res?.data?.arranges || [];
-          return arranges.map((item) => {
+          return arranges.map((item, index) => {
             var arrs = [];
             for(var i = 0; i < item.length; i+=2) {
               arrs.push({
@@ -74,7 +74,10 @@ const Center = () => {
                 end: item[i+1],
               });
             }
-            return arrs;
+            return {
+              id: index,
+              ranges: arrs,
+            };
           });
         },
       }
@@ -157,11 +160,11 @@ const Center = () => {
     }
 
     if (tabValue === 'reservations') { //预约记录
-      return <Reservations data={reservations} user={currentUser} onCancel={cancel}/>;
+      return <Reservations data={reservations} onCancel={cancel}/>;
     }
 
     if (tabValue === 'records') { //过往病历
-      return <Records data={records} user={currentUser}/>;
+      return <Records data={records}/>;
     }
 
     if (tabValue === 'bills') { //账单
