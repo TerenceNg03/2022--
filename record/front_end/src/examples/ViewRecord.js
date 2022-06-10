@@ -45,12 +45,15 @@ export default class ViewRecord extends Component {
         super(props);
         this.state = {
             recordID: 3,
-            loaded: false
+            loaded: false,
+            recordData: {},
+            doctorData: {},
+            patientData: {}
         }
     }
 
     formRef = React.createRef()
-    recordData = {}
+    // recordData = {}
 
     handleFinish = evt => {
         console.log('submit: ', this.formRef.current.getFieldsValue())
@@ -58,7 +61,7 @@ export default class ViewRecord extends Component {
 
     // getDataFromBackend() {
     componentDidMount() {
-        fetch(`http://124.220.171.17:1376/api/view/${this.state.recordID}`,{
+        fetch(`http://124.220.171.17:1376/api/record/view/${this.state.recordID}`,{
             method:"GET"
         }).then(res=>res.json()).then(data=>{
             // console.log("from record database[get]: ", data);
@@ -167,11 +170,11 @@ export default class ViewRecord extends Component {
                 layout="horizontal"
                 onFinish={this.handleFinish}
             >
-                {/*<FormBuilder meta={this.getInfoMeta()} initialValues={personalInfoSample} viewMode/>*/}
+                <FormBuilder meta={this.getInfoMeta()} initialValues={personalInfoSample} viewMode/>
                 <hr/>
                 <FormBuilder meta={this.getFormMeta()} initialValues={this.recordData} viewMode={this.state.loaded}/>
                 <hr/>
-                {/*<FormBuilder meta={this.getDoctorMeta()} initialValues={doctorInfoSample} viewMode />*/}
+                <FormBuilder meta={this.getDoctorMeta()} initialValues={doctorInfoSample} viewMode />
             </Form>
         )
     }

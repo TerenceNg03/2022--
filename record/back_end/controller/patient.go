@@ -6,8 +6,15 @@ import (
 	"se_case_back_end/common"
 	"se_case_back_end/model"
 	"se_case_back_end/response"
-	"strconv"
 )
+
+type DoctorName struct {
+	Real_name string
+}
+
+type DescriptionStr struct {
+	Cc string
+}
 
 func GetRecordByPID(c *gin.Context) {
 	id := c.Param("patient_id")
@@ -18,11 +25,25 @@ func GetRecordByPID(c *gin.Context) {
 		return
 	}
 	var res []gin.H
-	for i := 0; i < len(records); i++ {
-		res = append(res, gin.H{
-			"date": records[i].UpdatedAt.Format("2006-01-02 15:04:05"),
-			"url":  "/api/view/" + strconv.Itoa(int(records[i].ID)),
-		})
+	if len(records) > 0 {
+		for i := 0; i < len(records); i++ {
+			var docName DoctorName
+			var Description DescriptionStr
+			db.Raw("select real_name from management.user where id = ?", records[i].DoctorID).Scan(&docName)
+			print(records[i].DoctorID, docName.Real_name, "\n")
+			db.Raw("select cc from record.cases where register_id = ?", records[i].ID).Scan(&Description)
+			print(records[i].ID, Description.Cc, "\n")
+			res = append(res, gin.H{
+				// 			"date": records[i].UpdatedAt.Format("2006-01-02 15:04:05"),
+				// 			"url":  "/api/view/" + strconv.Itoa(int(records[i].ID)),
+				"recordID":    records[i].ID,
+				"doctorName":  docName.Real_name,
+				"description": Description.Cc,
+			})
+		}
+
+	} else {
+		res = make([]gin.H, 0)
 	}
 	response.Success(c, gin.H{"data": res}, "用户所有挂号")
 }
@@ -40,17 +61,21 @@ func GetRecord(c *gin.Context) {
 	//}
 	var sup []gin.H
 	var tre []gin.H
+	var docName DoctorName
+	var Name DoctorName
+	db.Raw("select real_name from management.user where id = ?", rg.DoctorID).Scan(&docName)
+	db.Raw("select real_name from management.user where id = ?", rg.UserID).Scan(&docName)
 	reg := gin.H{
-		"id": rg.ID,
-		//"name":       rg.Name,
+		"id":   rg.ID,
+		"name": Name.Real_name,
 		//"age":        rg.Age,
 		//"gender":     rg.Gender,
 		//"department": rg.Department,
 		//"status":     rg.Status,
-		"regTime": rg.CreatedAt.Format("2006-01-02 15:04:05"),
-		"userID":  rg.UserID,
-		//"doctorName": rg.DoctorName,
-		"doctorID": rg.DoctorID,
+		"regTime":    rg.CreatedAt.Format("2006-01-02 15:04:05"),
+		"userID":     rg.UserID,
+		"doctorName": docName.Real_name,
+		"doctorID":   rg.DoctorID,
 	}
 	ca := model.Case{}
 	if err := db.Model(&model.Case{}).Where("register_id = " + id).Take(&ca).Error; err != nil {

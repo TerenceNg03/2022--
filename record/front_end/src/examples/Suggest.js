@@ -1,43 +1,95 @@
 import React, {Component} from 'react';
 import 'antd/dist/antd.css';
 import '../index.css';
-import useHash from '../useHash'
+import jsonp from 'fetch-jsonp';
 import { useState } from "react";
 import {Form, Input, Button, Space, Select, notification} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { medicines } from "./UpdateRecord";
-// import SearchInput from "./Search";
+import { SampleMedicines, AllMedInfo} from "./UpdateRecord";
+import qs from "qs";
 const { Option } = Select;
 
 // const medItem = {
 //     basic: {name: 'medItem', component: Search}
 // }
 
+let timeout;
+let currentValue;
+
+const fetch_http = (value, callback) => {
+    if (timeout) {
+        clearTimeout(timeout);
+        timeout = null;
+    }
+
+    currentValue = value;
+    let code = 0
+    const fake = () => {
+        fetch(`http://124.220.171.17:6666/doctor_interface/querymedicine/?SearchContent=${value}`,{
+            method:"GET",
+        }).then(res=> {
+            code = res.status
+            console.log(res)
+            if (code!==200){
+                throw new Error(`HTTP error ${res.status}`)
+            }
+            return res.json()
+        }).then(data=>{
+            console.log('return data from pharmacy backend[getAllMedInfo]: ', data)
+            let newOptions = []
+            if (code===200){
+                for(let i=0; i<data["MediList"].length && i<20; i++) {
+                    let item={
+                        "id": data["MediList"][i]["ID"],
+                        "medName": data["MediList"][i]["Name"],
+                        "maxval": data["MediList"][i]["Num"],
+                        "unit": data["MediList"][i]["Unit"],
+                        "Usage": data["MediList"][i]["Usage"],
+                    }
+                    newOptions.push(item)
+                }
+            }
+            callback(newOptions)
+        }).catch(error => {
+            const key = `open${Date.now()}`;
+            const btn = (
+                <Button type="primary" size="small" onClick={() => notification.close(key)}>
+                    确认
+                </Button>
+            );
+            notification.open({
+                message: `获取药房数据失败！`,
+                description:
+                    `请检查网络并刷新重试, ${error}`,
+                btn,
+                key,
+            });
+        })
+    };
+
+    timeout = setTimeout(fake, 300);
+};
+
 const Suggest = () => {
-// export default class Suggest extends Component {
-    // const [medicine, setMedicine] = useState("");
-    // const [unit, setUnit] = useState("");
-    // const [Usage, setUsage] = useState("");
-    // formRef = React.createRef()
-    // const [val, setVal] = useState(0);
+    const [medoption, setMedoption] = useState([])
+    const [load, setLoad] = useState(false)
+
+    const getMedOption = (newvalue) => {
+        setLoad(true);
+        if(newvalue && newvalue.length>=2){
+            fetch_http(newvalue, setMedoption)
+        } else {
+            setMedoption([])
+        }
+        setLoad(false);
+    }
+
     const handleMedicineChange = (value) => {
-        for(let i=0; i<medicines.length; i++){
-            if(medicines[i]["medName"] === value) {
-                console.log(`medName: ${value}, unit: ${medicines[i]["unit"]}, Usage: ${medicines[i]["Usage"]}`)
-                // console.log('in suggests: ', props.form.getFieldsValue())
-                // console.log(`name: ${name}`);
-                // setMedicine(value);
-                // setUnit(medicines[i]["unit"]);
-                // setUsage(medicines[i]["Usage"]);
-                // setVal(medicines[i]["val"]);
-                // console.log(`medName: ${value}, unit: ${unit}, Usage: ${Usage}`)
-                // this.formRef.current.setFieldsValue({
-                //     searchItem: {
-                //         medName: medicines[i]["medName"],
-                //         unit: medicines[i]["unit"],
-                //         Usage: medicines[i]["Usage"]
-                //     }
-                // })
+        console.log(medoption, value)
+        for(let i=0; i<medoption.length; i++){
+            if(medoption[i]["id"] === value) {
+                console.log(`medName: ${medoption[i]["medName"]}, unit: ${medoption[i]["unit"]}, Usage: ${medoption[i]["Usage"]}`)
+                AllMedInfo.push(medoption[i])
                 const key = `open${Date.now()}`;
                 const btn = (
                     <Button type="primary" size="small" onClick={() => notification.close(key)}>
@@ -45,18 +97,20 @@ const Suggest = () => {
                     </Button>
                 );
                 notification.open({
-                    message: `药品：${value} 信息完成核对`,
-                    description:
-                        `单位：${medicines[i]["unit"]} || 建议用法：${medicines[i]["Usage"]} || 药品剩余：${medicines[i]["maxval"]}`,
+                    message: `药品：${medoption[i]["medName"]} 信息完成核对`,
+                    description:(
+                        <a>
+                            {`单位：${medoption[i]["unit"]}`}<br/>
+                            {`建议用法：${medoption[i]["Usage"]}`}<br/>
+                            {`药品剩余：${medoption[i]["maxval"]}`}
+                        </a>
+                    ),
+                    duration: 10,
                     btn,
                     key,
                 });
             }
         }
-    };
-
-    const onFinish = values => {
-        console.log('Received values of form:', values);
     };
 
     return (
@@ -73,18 +127,18 @@ const Suggest = () => {
                                 <Select
                                     showSearch
                                     // value={value}
+                                    allowClear
                                     placeholder="选择药品"
                                     style={{width: 120}}
+                                    loading={load}
                                     optionFilterProp="children"
                                     defaultActiveFirstOption={false}
                                     showArrow={false}
-                                    filterOption={(input, option) =>
-                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                    }
-                                    // onChange={handleMedicineChange}
+                                    filterOption={false}
+                                    onSearch={getMedOption}
                                     onChange={handleMedicineChange}
                                 >
-                                    {medicines.map((d) => <Option key={d["medName"]}>{d["medName"]}</Option>)}
+                                    {medoption.map((d) => <Option key={d["id"]}>{d["medName"]}</Option>)}
                                 </Select>
                             </Form.Item>
                             <Form.Item

@@ -8,8 +8,8 @@ import './App.css'
 
 const { Option } = Select
 const examples = {
-  basic: { name: '浙江大学医学院附属第二医院门诊病历', component: UpdateRecord },
-  // basic: { name: '浙江大学医学院附属第二医院门诊病历', component: ViewScripts },
+  // basic: { name: '浙江大学医学院附属第二医院门诊病历', component: UpdateRecord },
+  basic: { name: '浙江大学医学院附属第二医院门诊病历', component: ViewScripts },
 }
 
 export default () => {

@@ -4,6 +4,7 @@ import FormBuilder from 'antd-form-builder'
 import moment from "moment";
 import CheckAST from "./CheckAST.js"
 import Suggest from "./Suggest.js"
+import {string} from "prop-types";
 // import ExportExcel from "./ExportExcel.js";
 const FormItem = Form.Item;
 
@@ -23,19 +24,25 @@ const personalInfoSample = {
     time: moment('2022-01-01 15:43:56'),
 }
 
-let medicines = [{"medName": "钝角", "maxval": 5, "unit": "盒/50mg", "Usage": "口服"},
-                {"medName": "您好", "maxval": 5, "unit": "盒/30mg", "Usage": "外用"},
-                {"medName": "阿姆斯特朗", "maxval": 5, "unit": "盒/10mg", "Usage": "在月球上"},
-                {"medName": "Gemini", "maxval": 5, "unit": "盒/10mg", "Usage": "上课"}]
-export {medicines}
+let SampleMedicines = [{"id": 123123,"medName": "钝角", "maxval": 5, "unit": "盒/50mg", "Usage": "口服"},
+                {"id": 123123,"medName": "您好", "maxval": 5, "unit": "盒/30mg", "Usage": "外用"},
+                {"id": 123123,"medName": "阿姆斯特朗", "maxval": 5, "unit": "盒/10mg", "Usage": "在月球上"},
+                {"id": 123123,"medName": "Gemini", "maxval": 5, "unit": "盒/10mg", "Usage": "上课"}]
+export {SampleMedicines}
+
+// let firstPgMed = []
+// export {firstPgMed}
+
+let AllMedInfo = []
+export {AllMedInfo}
 
 export default class UpdateRecord extends Component {
     constructor(props) {
         super(props);
         this.state = {
             recordID: 0,
-            userID: 9527,
-            doctorID: 2022,
+            userID: 5,
+            doctorID: 8,
             loading: true,
             commit: true
         }
@@ -49,7 +56,12 @@ export default class UpdateRecord extends Component {
         formData.append('userID', this.state.userID);
         formData.append('doctorID', this.state.doctorID);
         console.log('send data to record backend[newcase]: ', formData.get('userID')," ", formData.get('doctorID'));
-        fetch(`http://124.220.171.17:1376/api/newcase`,{
+        // this.newCase(formData)
+        this.setState({loading: false})
+    }
+
+    newCase(formData) {
+        fetch(`http://124.220.171.17:1376/api/record/newcase`,{
             method:"POST",
             body: formData
         }).then(res=>res.json()).then(data=>{
@@ -85,14 +97,7 @@ export default class UpdateRecord extends Component {
                 });
             }
         })
-
-        console.log('to pharmacy')
-        this.setState({loading: false})
     }
-
-    // componentDidUpdate() {
-    //     console.log('to pharmacy')
-    // }
 
     handleChange = () => {
         this.forceUpdate();
@@ -101,8 +106,6 @@ export default class UpdateRecord extends Component {
 
     handleFinish = evt => {
         console.log('submit: ', this.formRef.current.getFieldsValue())
-        // console.log('submit__: ', this.props.form.getFieldsValue())
-        // console.log('submit: ', JSON.stringify(this.formRef.current.getFieldsValue()))
         const x = this.formRef.current.getFieldsValue()
         let sps = [];
         for(let i=0; i<x["sps"].length; i++){
@@ -111,16 +114,23 @@ export default class UpdateRecord extends Component {
                 "result": x["sps"][i]["result"]})
         }
         let trs = [];
+
+        let newMedBill = {
+            "patient_id": this.state.userID.toString(),
+            "bill": []
+        }
+
         for(let i=0; i<x["trs"].length; i++){
             let err_flag = false;
-            for(let j=0; j<medicines.length; j++){
-                if(medicines[j]["medName"] === x["trs"][i]["medName"]) {
+            let medName = "";
+            for(let j=0; j<AllMedInfo.length; j++){
+                if(AllMedInfo[j]["id"] === x["trs"][i]["medName"]) {
                     let err_str = "";
-                    if ( parseInt(x["trs"][i]["val"])>medicines[j]["maxval"] ) {
-                        err_str = `使用的药品：${medicines[j]["medName"]} 使用量大于库存！`;
+                    if ( parseInt(x["trs"][i]["val"])>AllMedInfo[j]["maxval"] ) {
+                        err_str = `使用的药品：${AllMedInfo[j]["medName"]} 使用量${parseInt(x["trs"][i]["val"])} 大于库存${AllMedInfo[j]["maxval"]}！`;
                     }
-                    else if ( x["trs"][i]["unit"]!==medicines[j]["unit"] ) {
-                        err_str = `药品：${medicines[j]["medName"]} 剂量单位填写错误！`;
+                    else if ( x["trs"][i]["unit"]!==AllMedInfo[j]["unit"] ) {
+                        err_str = `药品：${AllMedInfo[j]["medName"]} 剂量单位填写错误(前后请勿输入空格),正确单位：${AllMedInfo[j]["unit"]}！`;
                     }
                     if(err_str!=="") {
                         const key = `open${Date.now()}`;
@@ -139,6 +149,9 @@ export default class UpdateRecord extends Component {
                         err_flag = true;
                         break;
                     }
+                    else{
+                        medName = AllMedInfo[j]["medName"];
+                    }
                 }
             }
             if(err_flag){
@@ -147,12 +160,16 @@ export default class UpdateRecord extends Component {
                 break;
             }
             trs.push({"clinicID": personalInfoSample.id,
-                "medName": x["trs"][i]["medName"],
+                "medName": medName,
                 "val": parseInt(x["trs"][i]["val"]),
                 "unit": x["trs"][i]["unit"],
                 "Usage": x["trs"][i]["Usage"],})
+            newMedBill["bill"].push({
+                "medName": x["trs"][i]["medName"],
+                "val": parseInt(x["trs"][i]["val"]),
+            })
         }
-        const newData={
+        let newRecordData={
             "cas": {
                 "registerID" : this.state.recordID,
                 "cc" : x["cc"],
@@ -166,47 +183,85 @@ export default class UpdateRecord extends Component {
             "sps" : sps,
             "trs" : trs
         }
-        console.log("after change: ", JSON.stringify(newData))
-        if(!this.state.commit) {
-            fetch(`http://124.220.171.17:1376/api/commit?id=${this.state.recordID}`, {
-                method: "POST",
+        console.log("after change: ", JSON.stringify(newRecordData))
+        if(!this.state.commit) { // button not frozen
+            this.setState({commit: true})
+            // commit to pharmacy backend
+            let toPha_code = 0
+            console.log(newMedBill)
+            fetch(`http://124.220.171.17:6666/doctor_interface/prescmedicine/`,{
+                method:"POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(newData)
-            }).then(res => res.json()).then(data => {
-                console.log(data)
-                if (data["code"] === 200) {
-                    // recordID = data["data"]["id"];
-                    const key = `open${Date.now()}`;
-                    const btn = (
-                        <Button type="primary" size="small" onClick={() => notification.close(key)}>
-                            确认
-                        </Button>
-                    );
-                    notification.open({
-                        message: data['msg'],
-                        description:
-                            `病历号：${this.state.recordID}`,
-                        btn,
-                        key,
-                    });
-                } else {
-                    const key = `open${Date.now()}`;
-                    const btn = (
-                        <Button type="primary" size="small" onClick={() => notification.close(key)}>
-                            确认
-                        </Button>
-                    );
-                    notification.open({
-                        message: `修改失败`,
-                        description:
-                            data['msg'],
-                        btn,
-                        key,
-                    });
+                body: JSON.stringify(newMedBill)
+            }).then(res=> {
+                toPha_code = res.status
+                console.log(res)
+                if (toPha_code!==200){
+                    throw new Error(`HTTP error ${res.status}`)
                 }
+                return res.json()
+            }).then(data=>{
+                // add alert here
+                console.log(data)
+            }).catch(error => {
+                const key = `open${Date.now()}`;
+                const btn = (
+                    <Button type="primary" size="small" onClick={() => notification.close(key)}>
+                        确认
+                    </Button>
+                );
+                notification.open({
+                    message: `向药房发送数据失败！`,
+                    description:
+                        `请检查网络并刷新重试, ${error}`,
+                    btn,
+                    key,
+                });
             })
+
+            // commit to record backend
+            // fetch(`http://124.220.171.17:1376/api/record/commit?id=${this.state.recordID}`, {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json"
+            //     },
+            //     body: JSON.stringify(newRecordData)
+            // }).then(res => res.json()).then(data => {
+            //     console.log(data)
+            //     if (data["code"] === 200 ) {
+            //         // recordID = data["data"]["id"];
+            //         const key = `open${Date.now()}`;
+            //         const btn = (
+            //             <Button type="primary" size="small" onClick={() => notification.close(key)}>
+            //                 确认
+            //             </Button>
+            //         );
+            //         notification.open({
+            //             message: data['msg'],
+            //             description:
+            //                 `病历号：${this.state.recordID}`,
+            //             btn,
+            //             key,
+            //         });
+            //     } else {
+            //         const key = `open${Date.now()}`;
+            //         const btn = (
+            //             <Button type="primary" size="small" onClick={() => notification.close(key)}>
+            //                 确认
+            //             </Button>
+            //         );
+            //         notification.open({
+            //             message: `修改失败`,
+            //             description:
+            //                 data['msg'],
+            //             btn,
+            //             key,
+            //         });
+            //     }
+            // })
+
         }
     }
 
