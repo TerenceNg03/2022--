@@ -7,8 +7,7 @@ import { queryHospitalList, queryDepartmentList, queryDoctorList } from '@/servi
 import { reserveDoctor } from '@/services/reservation';
 import styles from './style.less';
 
-const Option = Select.Option;
-const { Search } = Input;
+const { Option } = Select;
 
 const DoctorList = () => {
   const [done, setDone] = useState(false);
@@ -22,7 +21,7 @@ const DoctorList = () => {
 
   const { data: departments } = useRequest(queryDepartmentList);
 
-  const { data, loading, mutate } = useRequest(
+  const { data, loading } = useRequest(
     () => {
       return queryDoctorList({
         hospital,
@@ -45,7 +44,6 @@ const DoctorList = () => {
       manual: true,
       onSuccess: (result, params) => {
         if(result.success){
-          //mutate(result);
           setDone(true);
         } else {
           message.error(`预约失败：${result.message}`);
@@ -84,7 +82,7 @@ const DoctorList = () => {
 
   const extraContent = (
     <div className={styles.extraContent}>
-      <Search className={styles.extraContentSearch} placeholder="通过名字查询" onSearch={handleSearch} />
+      <Input.Search className={styles.extraContentSearch} placeholder="通过名字查询" onSearch={handleSearch} />
     </div>
   );
 

@@ -25,13 +25,13 @@ const OperationModal = (props) => {
     onReturn();
   }
 
-  const { data: occupations, loading: loadingOccupations, run: getOccupations } = useRequest(() => {
+  const { data: occupations, loading: loadingOccupations, refresh } = useRequest(() => {
     return queryOccupiedRanges({
       doctor_id: current.id,
     });
   }, { refreshDeps: [current.id] });
 
-  const { data: schedule, loading: loadingSchedule, run: getSchedule } = useRequest(() => {
+  const { data: schedule, loading: loadingSchedule } = useRequest(() => {
     return querySchedule({
       doctor_id: current.id,
     });
@@ -74,7 +74,6 @@ const OperationModal = (props) => {
           start_time: moment(values.date + ' ' + start_time).format('YYYY-MM-DD HH:mm:ss'),
           expire_time: moment(values.date + ' ' + expire_time).format('YYYY-MM-DD HH:mm:ss'),
         });
-        getOccupations();
       }}
       //initialValues={current}
       submitter={{
@@ -165,7 +164,15 @@ const OperationModal = (props) => {
           title="预约成功"
           subTitle={<>您已成功预约{current.name}。</>}
           extra={
-            <Button type="primary" onClick={handleReturn}>
+            <Button
+              type="primary"
+              onClick={() =>
+                {
+                  refresh();
+                  handleReturn();
+                }
+              }
+            >
               关闭
             </Button>
           }
