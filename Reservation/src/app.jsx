@@ -9,15 +9,13 @@ import { verifyAccount } from '@/services/management'
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
 
-const jumpToLogin = () => {
+const verifyLogin = () => {
+  if(localStorage.user) return;
+
   const currentUrl = window.location.href;
   const afterProt = currentUrl.indexOf("//") + 2;
   const redir = encodeURIComponent(currentUrl.substring(afterProt));
   window.location.href = `http://124.220.171.17:3000/login?redir=${redir}`;
-}
-
-const verifyLogin = () => {
-  if(!localStorage.user) jumpToLogin();
 }
 
 const fetchUserInfo = async () => {
@@ -30,13 +28,13 @@ const fetchUserInfo = async () => {
   } else {
     message.error(verification.message);
     localStorage.removeItem('user');
-    jumpToLogin();
+    window.location.href = 'http://124.220.171.17:3000/logout';
   }
 
   const info = {
     access: verification.data.role,
     name: verification.data.userName,
-    id: JSON.parse(localStorage?.user).userId,
+    id: JSON.parse(localStorage.user)?.userId,
     avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
     geographic: {
       province: '浙江省',

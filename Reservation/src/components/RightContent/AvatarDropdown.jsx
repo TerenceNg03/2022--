@@ -1,4 +1,4 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Menu, Spin } from 'antd';
 import { stringify } from 'querystring';
 import { useCallback } from 'react';
@@ -14,6 +14,11 @@ const AvatarDropdown = ({ menu }) => {
 
       if(key === 'center') {
         history.push('/center');
+      }
+
+      if (key === 'return') {
+        window.location.href = 'http://124.220.171.17:3000';
+        return;
       }
 
       if (key === 'logout') {
@@ -55,6 +60,10 @@ const AvatarDropdown = ({ menu }) => {
         </Menu.Item>
       )}
       {menu && <Menu.Divider />}
+      <Menu.Item key="return">
+        <HomeOutlined />
+        回到主页
+      </Menu.Item>
       <Menu.Item key="logout">
         <LogoutOutlined />
         退出登录
