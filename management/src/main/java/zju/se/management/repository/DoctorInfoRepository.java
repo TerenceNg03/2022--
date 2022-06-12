@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface DoctorInfoRepository extends JpaRepository<DoctorInfo, Integer> {
     void deleteById(int id);
+    void deleteByUserId(int userId);
     void deleteAllByUserId(int userId);
     boolean existsById(int id);
     List<DoctorInfo> findByDepartment(String department);

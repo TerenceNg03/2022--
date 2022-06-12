@@ -53,8 +53,8 @@ public class PermissionInterceptor extends SessionInterceptor {
     }
 
     protected boolean getPermission(HttpServletRequest req) throws Exception {
-        HttpSession session = req.getSession();
-        String token = (String) session.getAttribute("token");
+//        HttpSession session = req.getSession();
+        String token = req.getHeader("token");
         DecodedJWT decodedJWT = TokenUtil.decodeToken(token);
         if(decodedJWT.getClaim("role").asString().equals(User.userType.ADMIN.toString())) {
             return true;

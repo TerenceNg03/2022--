@@ -19,10 +19,7 @@ public class TokenUtilTests {
         String token = TokenUtil.getToken(user);
         System.out.println(token);
         DecodedJWT decodedJWT = TokenUtil.decodeToken(token);
-        System.out.println("pass");
-        System.out.println(decodedJWT.getClaim("id").asInt());
-        System.out.println(decodedJWT.getClaim("userName").asString());
-        System.out.println(decodedJWT.getExpiresAt());
-        System.out.println(decodedJWT.getClaim("role").asString());
+        System.out.println("pass decode");
+        System.out.println(decodedJWT.getSignature());
     }
 }

@@ -43,19 +43,16 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(permissionInterceptor)
                 .addPathPatterns(
                         "/api/user/**",
-                        "/admin/**"
+                        "/api/statistics/**"
                 );
         // 需要登录的URI
         registry.addInterceptor(sessionInterceptor)
                 .addPathPatterns(
-                        "/**",
                         "/api/arrange/**",
-                        "/api/doctor/**"
+                        "/api/doctor/**",
+                        "/api/ws/**"
                 ).excludePathPatterns(
-                        "/api/oauth/**",
-                        "/api/ws/**", // put here for debug use
-                        "/login",
-                        "/test.html"
+                        "/api/oauth/**"
                 ).excludePathPatterns(staticResources);
     }
 }

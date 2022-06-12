@@ -8,11 +8,12 @@ import {currentUser, getNotices} from './services/ant-design-pro/api';
 import { BookOutlined } from '@ant-design/icons';
 import defaultSettings from '../config/defaultSettings';
 import {createWebSocket} from "@/websocket";
-import {notification} from "antd";
+import {notification, message} from "antd";
+import {api} from '@/config';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/login';
-const webSocketPath = 'ws://localhost:3000/message';
+const webSocketPath = `ws://${api.host}:${api.port}/message`;
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
 export const initialStateConfig = {
@@ -30,14 +31,17 @@ export async function getInitialState(): Promise<{
 }> {
     const fetchUserInfo = async () => {
         try {
-            const msg = await currentUser({
-                userName: localStorage.getItem('userName'),
-                token: localStorage.getItem('token'),
-            });
+            const msg = await currentUser();
             if(msg.code < 0){
                 localStorage.clear();
-                history.push(loginPath);
+                if(history.location.pathname !== '/'){
+                    history.push(loginPath);
+                }
             } else {
+                if(msg.data.role !== 'ADMIN' && history.location.pathname !== '/' && history.location.pathname !== '/logout'){
+                    message.error('无访问权限');
+                    history.push('/');
+                }
                 return msg.data;
             }
         } catch (error) {
@@ -47,27 +51,29 @@ export async function getInitialState(): Promise<{
         return undefined;
     };
     // 如果不是登录页面，执行
-    if (history.location.pathname !== loginPath || history.length <= 1) {
+    if (history.location.pathname !== loginPath) {
         const currentUser = await fetchUserInfo();
-        const offlineNotices = await getNotices(currentUser?.userName);
-        if(offlineNotices.code === 0 && offlineNotices.data.mqList.length > 0){
-            for(let i = 0; i < offlineNotices.data.mqList.length; i++){
+        if(history.location.pathname != '/') {
+            const offlineNotices = await getNotices(currentUser?.userName);
+            if (offlineNotices.code === 0 && offlineNotices.data.mqList.length > 0) {
+                for (let i = 0; i < offlineNotices.data.mqList.length; i++) {
+                    notification['info']({
+                        message: `未读消息: ${offlineNotices.data.mqList[i].title}`,
+                        description: offlineNotices.data.mqList[i].content,
+                        duration: 0,
+                    });
+                }
+            }
+            const ws = createWebSocket(`${webSocketPath}/${currentUser?.userName}`);
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
                 notification['info']({
-                    message: `未读消息: ${offlineNotices.data.mqList[i].title}`,
-                    description: offlineNotices.data.mqList[i].content,
+                    message: data.title,
+                    description: data.content,
                     duration: 0,
                 });
-            }
+            };
         }
-        const ws = createWebSocket(`${webSocketPath}/${currentUser?.userName}`);
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            notification['info']({
-                message: data.title,
-                description: data.content,
-                duration: 0,
-            });
-        };
         return {
             fetchUserInfo,
             currentUser,
@@ -92,19 +98,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
         footerRender: () => <Footer />,
         onPageChange: () => {
             const { location } = history;
-            if (!initialState?.currentUser && location.pathname !== loginPath) {
+            if (!initialState?.currentUser && location.pathname !== loginPath && location.pathname !== '/') {
                 history.push(loginPath);
             }
         },
         navTheme: "dark",
-        links: isDev
-            ? [
-                  <Link to="/~docs" key="docs">
-                      <BookOutlined />
-                      <span>业务组件文档</span>
-                  </Link>,
-              ]
-            : [],
         menuHeaderRender: undefined,
         // 自定义 403 页面
         // unAccessible: <div>unAccessible</div>,

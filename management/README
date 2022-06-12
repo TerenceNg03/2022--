@@ -1,0 +1,12 @@
+Project of management subsystem.
+
+Zhiyuan Pan, 2022.6
+
+PRE-REQUISITES:
+    - JRE(17), yarn(deps: node, npm)
+    - If you have multiple java runtime environments, export the correct JAVA_HOME to the environment variables
+    - Install dependencies in frontend folder, using 'yarn install'
+
+USAGE:
+    - Run 'build.sh' in root folder, and the jar file will be generated in 'target/' folder
+    - Run 'java -jar target/management-0.0.1-SNAPSHOT.jar'

@@ -16,11 +16,11 @@ public class MQService {
     @Resource
     private RedisTemplate<String, Map<String, String>> redisTemplate;
 
-    public void produce(String userName, Map<String, String> object) {
+    public synchronized void produce(String userName, Map<String, String> object) {
         redisTemplate.opsForList().leftPush(MQ_KEY + userName, object);
     }
 
-    public List<Map<String, String>> consume(String userName) {
+    public synchronized List<Map<String, String>> consume(String userName) {
         var result = redisTemplate.opsForList().range(MQ_KEY + userName, 0, -1);
         assert result != null;
         if(!result.isEmpty()) {

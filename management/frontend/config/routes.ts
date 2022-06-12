@@ -1,44 +1,30 @@
 ﻿export default [
     {
-        title: '登录',
+        path: '/',
+        layout: false,
+        component: './Index'
+    },
+    {
         path: '/login',
         layout: false,
         component: './user/Login',
     },
     {
-        path: '/welcome',
+        path: '/dashboard',
         name: 'welcome',
-        icon: 'smile',
+        icon: 'Dashboard',
         component: './Welcome',
     },
     {
-        path: '/admin',
-        name: 'admin',
-        icon: 'crown',
-        access: 'canAdmin',
-        component: './Admin',
-        routes: [
-            {
-                path: '/admin/sub-page',
-                name: 'sub-page',
-                icon: 'smile',
-                component: './Welcome',
-            },
-            {
-                component: './404',
-            },
-        ],
-    },
-    {
-        name: 'list.table-list',
+        name: 'doctor-info',
         icon: 'table',
-        path: '/list',
+        path: '/doctors',
         component: './TableList',
     },
     {
-        path: '/',
+        path: '/logout',
         layout: false,
-        component: './Index'
+        component: './user/Logout',
     },
     {
         title: '404',

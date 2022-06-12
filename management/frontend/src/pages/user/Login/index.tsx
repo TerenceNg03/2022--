@@ -6,6 +6,8 @@ import { history } from 'umi';
 import Footer from '@/components/Footer';
 import CaptchaInput from "@/components/CaptchaInput";
 import {login, logout, patientRegister, getCaptcha} from '@/services/ant-design-pro/api';
+import {api} from '@/config';
+import qs from 'qs';
 
 import styles from './index.less';
 
@@ -16,6 +18,16 @@ const Login: React.FC = () => {
     const [captchaKey, setCaptchaKey] = useState<string>('');
     const [captchaImage, setCaptchaImage] = useState<string>('');
     const [captchaCode, setCaptchaCode] = useState<string>('');
+    const { redir } = qs.parse(window.location.href.split('?')[1]);
+
+    useEffect(() => {
+        if (isLogin && redir != null) {
+            message.info("您已登录，将跳转至原页面");
+            setTimeout(()=>{
+                window.location.href=`http://${decodeURIComponent(redir as string)}?userId=${encodeURIComponent(localStorage.getItem('userId') || '')}&userName=${encodeURIComponent(localStorage.getItem('userName') || '')}&token=${encodeURIComponent(localStorage.getItem('token') || '')}`;
+            }, 2000);
+        }
+    }, []);
 
     useEffect(()=>{
         getCaptcha().then(res => {
@@ -45,7 +57,7 @@ const Login: React.FC = () => {
     const handleSubmit = async (values: Record<string, any>) => {
         if (isLogin && type === 'login') {
             await logout();
-            history.push('/');
+            window.location.href=`http://${api.host}:${api.port}/`;
             return;
         }
         if(captchaCode.length === 0){
@@ -64,7 +76,7 @@ const Login: React.FC = () => {
 
                 if (msg.code === 0) {
                     message.success('注册成功');
-                    history.push('/');
+                    history.push('/login');
                 } else {
                     message.error(msg.message);
                 }
@@ -79,7 +91,12 @@ const Login: React.FC = () => {
                     message.success('登录成功');
                     localStorage.setItem('userName', msg.data.userName);
                     localStorage.setItem('token', msg.data.token);
-                    history.push('/welcome');
+                    localStorage.setItem('userId', msg.data.userId);
+                    if(redir != null) {
+                        window.location.href=`http://${decodeURIComponent(redir as string)}?userId=${encodeURIComponent(msg.data.userId)}&userName=${encodeURIComponent(msg.data.userName)}&token=${encodeURIComponent(msg.data.token)}`;
+                    } else{
+                        window.location.href=`http://${api.host}:${api.port}/`;
+                    }
                 } else {
                     message.error(msg.message);
                 }
@@ -239,7 +256,7 @@ const Login: React.FC = () => {
                                     },
                                     ({ getFieldValue }) => ({
                                         validator(_, value) {
-                                            if (!value || getFieldValue('password') == value) {
+                                            if (!value || getFieldValue('regPassword') == value) {
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject('两次密码输入不一致');

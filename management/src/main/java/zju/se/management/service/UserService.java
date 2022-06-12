@@ -37,21 +37,21 @@ public class UserService {
         return userRepository.findByRole(role);
     }
 
-    public void deleteUserById(int id) throws UserNotFoundException {
+    public synchronized void deleteUserById(int id) throws UserNotFoundException {
         if(!isExist(id)) {
             throw new UserNotFoundException();
         }
         userRepository.deleteById(id);
     }
 
-    public void deleteUserByName(String name) throws UserNotFoundException {
+    public synchronized void deleteUserByName(String name) throws UserNotFoundException {
         if(!isExist(name)) {
             throw new UserNotFoundException();
         }
         userRepository.deleteByUserName(name);
     }
 
-    public void addUser(@NotNull User user) throws UserAlreadyExistsException {
+    public synchronized void addUser(@NotNull User user) throws UserAlreadyExistsException {
         if(isExist(user.getUserName())) {
             throw new UserAlreadyExistsException();
         }
@@ -63,7 +63,7 @@ public class UserService {
         return user.getPassword();
     }
 
-    public void setPasswordByName(String name, String password) throws UserNotFoundException {
+    public synchronized void setPasswordByName(String name, String password) throws UserNotFoundException {
         User user = getUserByName(name);
         user.setPassword(password);
         userRepository.save(user);
@@ -75,6 +75,14 @@ public class UserService {
 
     public boolean isExist(int id) {
         return userRepository.existsById(id);
+    }
+
+    public int countByRole(User.userType role) {
+        return userRepository.countByRole(role);
+    }
+
+    public int countAll() {
+        return userRepository.countAll();
     }
 
 }

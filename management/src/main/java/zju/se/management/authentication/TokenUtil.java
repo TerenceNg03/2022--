@@ -8,6 +8,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import zju.se.management.entity.User;
 
 import java.util.Calendar;
+import java.util.Date;
 
 public class TokenUtil {
 
@@ -28,6 +29,16 @@ public class TokenUtil {
     public static DecodedJWT decodeToken(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(secret)).build();
         return verifier.verify(token);
+    }
+
+    public static Date getExpireDate(String token) {
+        DecodedJWT decodedJWT = decodeToken(token);
+        return decodedJWT.getExpiresAt();
+    }
+
+    public static String getSignature(String token) {
+        DecodedJWT decodedJWT = decodeToken(token);
+        return decodedJWT.getSignature();
     }
 
 }

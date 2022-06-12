@@ -8,6 +8,7 @@ import styles from './index.less';
 import { logout } from '@/services/ant-design-pro/api';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import crypto from 'crypto';
+import {api} from '@/config';
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;
@@ -19,13 +20,14 @@ export type GlobalHeaderRightProps = {
 const loginOut = async () => {
   await logout();
   const { query = {}, search, pathname } = history.location;
-  const { redirect } = query;
+  const { redir } = query;
   // Note: There may be security issues, please note
-  if (window.location.pathname !== '/login' && !redirect) {
+  if (window.location.pathname !== '/login' && !redir) {
+    localStorage.clear();
     history.replace({
       pathname: '/login',
       search: stringify({
-        redirect: pathname + search,
+        redir: `${api.host}:${api.port}` + pathname + search,
       }),
     });
   }
@@ -42,7 +44,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         loginOut();
         return;
       }
-      history.push(`/account/${key}`);
+      history.push(`/dashboard`);
     },
     [setInitialState],
   );
