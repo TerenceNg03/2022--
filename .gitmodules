@@ -1,3 +1,9 @@
+[submodule "review/front_end"]
+	path = review/front_end
+	url = https://github.com/LiuYuYing03/Evaluation_Front.git
+[submodule "review/backend"]
+	path = review/backend
+	url = https://github.com/YoungXinyu1802/Doctor-Review-backend.git
 [submodule "pharmacy/DatabaseBackend/se-pharmacy"]
 	path = pharmacy/DatabaseBackend/se-pharmacy
 	url = git@github.com:zju-stu-lizheng/se-pharmacy.git
