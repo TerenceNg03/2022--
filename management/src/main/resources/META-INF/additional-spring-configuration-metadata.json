@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "proxy.url",
+      "type": "java.lang.String",
+      "description": "Description for proxy.url."
+  }
+] }
